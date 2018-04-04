@@ -16,5 +16,12 @@
         android:layout_gravity="center"
         android:text="@string/title_home" />
 
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="GO TO AUTH"/>
+
 </LinearLayout>
 </ScrollView>

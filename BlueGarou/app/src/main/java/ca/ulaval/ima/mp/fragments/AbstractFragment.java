@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ca.ulaval.ima.bluegarou.R;
+import ca.ulaval.ima.mp.R;
 
 public abstract class AbstractFragment extends Fragment {
     protected View mView;

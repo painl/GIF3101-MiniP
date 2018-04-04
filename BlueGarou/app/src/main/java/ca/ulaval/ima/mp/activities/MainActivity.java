@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import ca.ulaval.ima.bluegarou.R;
+import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.fragments.HomeFragment;
 import ca.ulaval.ima.mp.fragments.RulesFragment;
 import ca.ulaval.ima.mp.fragments.StatsFragment;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private boolean fragmentTransit(Fragment transit, boolean toBackStack)
+    public boolean fragmentTransit(Fragment transit, boolean toBackStack)
     {
         if (transit != null)
         {
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mFragment = findViewById(R.id.main_content);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

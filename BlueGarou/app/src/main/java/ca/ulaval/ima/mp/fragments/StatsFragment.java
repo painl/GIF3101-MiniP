@@ -3,7 +3,7 @@ package ca.ulaval.ima.mp.fragments;
 import android.os.Bundle;
 import android.view.View;
 
-import ca.ulaval.ima.bluegarou.R;
+import ca.ulaval.ima.mp.R;
 
 public class StatsFragment extends AbstractFragment {
 
