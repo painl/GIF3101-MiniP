@@ -1,4 +1,4 @@
-package ca.ulaval.ima.bluegarou.fragments;
+package ca.ulaval.ima.mp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,15 +9,14 @@ import android.view.ViewGroup;
 
 import ca.ulaval.ima.bluegarou.R;
 
-public class AbstractFragment extends Fragment {
-    private View mView;
-    private Context mContext;
+public abstract class AbstractFragment extends Fragment {
+    protected View mView;
+    protected Context mContext;
     private int mLayout;
 
-    public static AbstractFragment newInstance(int layout) {
-        AbstractFragment abstractFragment = new AbstractFragment();
-        abstractFragment.mLayout = layout;
-        return abstractFragment;
+    protected void setLayout(int layout)
+    {
+        this.mLayout = layout;
     }
 
     @Override
@@ -44,4 +43,3 @@ public class AbstractFragment extends Fragment {
         mContext = getContext();
     }
 }
-

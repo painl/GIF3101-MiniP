@@ -1,4 +1,4 @@
-package ca.ulaval.ima.bluegarou.activities;
+package ca.ulaval.ima.mp.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,8 +10,9 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import ca.ulaval.ima.bluegarou.R;
-import ca.ulaval.ima.bluegarou.fragments.HomeFragment;
-import ca.ulaval.ima.bluegarou.fragments.SettingsFragment;
+import ca.ulaval.ima.mp.fragments.HomeFragment;
+import ca.ulaval.ima.mp.fragments.RulesFragment;
+import ca.ulaval.ima.mp.fragments.StatsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,25 +28,30 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     currentFragment = HomeFragment.newInstance();
                     break ;
-                case R.id.navigation_dashboard:
-                    currentFragment = HomeFragment.newInstance();
+                case R.id.navigation_stats:
+                    currentFragment = StatsFragment.newInstance();
                     break ;
-                case R.id.navigation_notifications:
-                    currentFragment = HomeFragment.newInstance();
-                    break ;
-                case R.id.navigation_settings:
-                    currentFragment = SettingsFragment.newInstance();
+                case R.id.navigation_rules:
+                    currentFragment = RulesFragment.newInstance();
                     break ;
             }
-            if (currentFragment != null) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(mFragment.getId(), currentFragment, currentFragment.getClass().getSimpleName());
-                transaction.commit();
-                return true;
-            }
-            return false;
+          return fragmentTransit(currentFragment, false);
         }
     };
+
+    private boolean fragmentTransit(Fragment transit, boolean toBackStack)
+    {
+        if (transit != null)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(mFragment.getId(), transit, transit.getClass().getSimpleName());
+            if (toBackStack)
+                transaction.addToBackStack(transit.getClass().getSimpleName());
+            transaction.commit();
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Fragment currentFragment = HomeFragment.newInstance();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(mFragment.getId(), currentFragment, currentFragment.getClass().getSimpleName());
-        transaction.commit();
+        fragmentTransit(currentFragment, false);
     }
-
 }
