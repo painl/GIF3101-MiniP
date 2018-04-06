@@ -26,5 +26,13 @@ public class HomeFragment extends AbstractFragment {
                 ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(), true);
             }
         });
+
+        Button test2 = mView.findViewById(R.id.btn_test2);
+        test2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)mContext).fragmentTransit(BluetoothFragment.newInstance(), true);
+            }
+        });
     }
 }
