@@ -1,51 +1,41 @@
 package ca.ulaval.ima.mp.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import ca.ulaval.ima.mp.game.roles.Psychic;
-import ca.ulaval.ima.mp.game.roles.Salvater;
-import ca.ulaval.ima.mp.game.roles.Villager;
-import ca.ulaval.ima.mp.game.roles.Witch;
-import ca.ulaval.ima.mp.game.roles.Wolf;
 
 public class Game {
 
-    private final List<Player> players;
+    public enum State {RUNNING, WAITING}
+    public enum Time {DAY, NIGHT}
+
+    private final Referee       referee;
+    private final List<Player>  players;
+    private State               state;
+    private Time                time;
+    private int                 turn;
 
     public Game(List<String> names) {
-        this.players = this.initPlayers(names);
+        this.referee = new Referee(this);
+        this.players = this.referee.dispatchRoles(names);
+        this.state = State.RUNNING;
+        this.time = Time.DAY;
+        this.turn = 0;
+        this.play();
     }
 
-    private List<Player> initPlayers(List<String> names) {
-        List<Player> players = new ArrayList<>();
-        Collections.shuffle(names);
-        if (names.size() == 3) {
-            players.add(new Player(this.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.getNextId(), names.get(1), new Salvater()));
-            players.add(new Player(this.getNextId(), names.get(2), new Psychic()));
-        }
-        else if (names.size() == 4) {
-            players.add(new Player(this.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.getNextId(), names.get(1), new Wolf()));
-            players.add(new Player(this.getNextId(), names.get(2), new Witch()));
-            players.add(new Player(this.getNextId(), names.get(3), new Psychic()));
-        }
-        else {
-            players.add(new Player(this.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.getNextId(), names.get(1), new Wolf()));
-            players.add(new Player(this.getNextId(), names.get(2), new Witch()));
-            players.add(new Player(this.getNextId(), names.get(3), new Psychic()));
-            players.add(new Player(this.getNextId(), names.get(4), new Salvater()));
-            for (int it = 5; it < names.size(); it++) {
-                players.add(new Player(this.getNextId(), names.get(it), new Villager()));
+    public void play() {
+        while (this.referee.isGameProceeding()) {
+            if (this.time == Time.DAY) {
+
             }
+            else {
+
+            }
+            this.time = (this.time == Time.DAY) ? Time.NIGHT : Time.DAY;
+            this.turn++;
         }
-        return players;
     }
 
-    private int getNextId() {
+    public int getNextId() {
         int id = -1;
         for (Player player: this.players) {
             if (player.getId() > id)
@@ -53,5 +43,21 @@ public class Game {
         }
         id++;
         return id;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
     }
 }
