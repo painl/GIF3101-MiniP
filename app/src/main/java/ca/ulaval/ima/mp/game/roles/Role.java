@@ -7,14 +7,14 @@ public abstract class Role implements IRole {
     public enum Type {VILLAGER, WITCH, SALVATER, PSYCHIC, WOLF}
 
     private final String    name;
-    private final String    photoURL;
+    private final String    photoName;
     private final Side      side;
     private final boolean   male;
     private final Type      type;
 
-    protected Role(String name, String photoURL, Side side, boolean male, Type type) {
+    protected Role(String name, String photoName, Side side, boolean male, Type type) {
         this.name = name;
-        this.photoURL = photoURL;
+        this.photoName = photoName;
         this.side = side;
         this.male = male;
         this.type = type;
@@ -24,8 +24,8 @@ public abstract class Role implements IRole {
         return side;
     }
 
-    public String getPhotoURL() {
-        return photoURL;
+    public String getPhotoName() {
+        return photoName;
     }
 
     public String getName() {
