@@ -1,5 +1,6 @@
 package ca.ulaval.ima.mp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import ca.ulaval.ima.mp.R;
+import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.activities.MainActivity;
 
 public class HomeFragment extends AbstractFragment {
@@ -24,19 +26,20 @@ public class HomeFragment extends AbstractFragment {
         super.onViewCreated(view, savedInstanceState);
         ImageView imageView = mView.findViewById(R.id.img);
         Picasso.get().load(R.drawable.girl).into(imageView);
-        Button test = mView.findViewById(R.id.btn_auth);
-        test.setOnClickListener(new View.OnClickListener() {
+        Button authBtn = mView.findViewById(R.id.btn_auth);
+        authBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(), true);
             }
         });
 
-        Button test2 = mView.findViewById(R.id.btn_play);
-        test2.setOnClickListener(new View.OnClickListener() {
+        Button playBtn = mView.findViewById(R.id.btn_play);
+        playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)mContext).fragmentTransit(BluetoothFragment.newInstance(), true);
+                Intent intent = new Intent(mContext, GameActivity.class);
+                mContext.startActivity(intent);
             }
         });
     }
