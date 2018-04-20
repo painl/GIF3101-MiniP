@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso;
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.activities.MainActivity;
+import ca.ulaval.ima.mp.activities.RemoteGameActivity;
+import ca.ulaval.ima.mp.activities.ServerGameActivity;
 
 public class HomeFragment extends AbstractFragment {
 
@@ -38,7 +40,16 @@ public class HomeFragment extends AbstractFragment {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, GameActivity.class);
+                Intent intent = new Intent(mContext, ServerGameActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
+        Button joinBtn = mView.findViewById(R.id.btn_join);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, RemoteGameActivity.class);
                 mContext.startActivity(intent);
             }
         });

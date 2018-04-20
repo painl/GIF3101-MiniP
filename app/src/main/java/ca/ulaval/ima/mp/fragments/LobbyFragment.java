@@ -1,18 +1,42 @@
 package ca.ulaval.ima.mp.fragments;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.Collection;
 
 import ca.ulaval.ima.mp.R;
+import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.adapters.LobbyListAdapter;
+import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
 
 public class LobbyFragment extends AbstractFragment {
 
+    /**
+     * Local Bluetooth adapter
+     */
+    private BluetoothAdapter mBluetoothAdapter = null;
+
+    /**
+     * Member object for the service
+     */
+    public BluetoothService mBluetoothService = null;
+
     private ListView playerListView;
     private ListView remotesListView;
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_ENABLE_BT = 3;
 
     public static LobbyFragment newInstance() {
         LobbyFragment fragment = new LobbyFragment();
@@ -28,9 +52,60 @@ public class LobbyFragment extends AbstractFragment {
         LobbyListAdapter lba = new LobbyListAdapter(mContext, values);
         playerListView.setAdapter(lba);
         remotesListView = mView.findViewById(R.id.remotes_list);
-        String[] values2 = new String[] { "Tel de raf", "Tel de A"};
-        LobbyListAdapter lba2 = new LobbyListAdapter(mContext, values);
-        remotesListView.setAdapter(lba);
+        Button remoteButton = view.findViewById(R.id.btn_add_remote);
+        remoteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (mBluetoothService != null) {
+                    Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+                    startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(getActivity(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // If BT is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (mBluetoothAdapter != null) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+                // Otherwise, setup the chat session
+            } else if (mBluetoothService == null) {
+                mBluetoothService = ((GameActivity) getActivity()).getBluetoothService();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (mBluetoothService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mBluetoothService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                mBluetoothService.start();
+            }
+        }
     }
 
 /*    public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -51,4 +126,45 @@ public class LobbyFragment extends AbstractFragment {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     } */
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE_SECURE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data);
+                }
+                break;
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    mBluetoothService = ((GameActivity)mContext).getBluetoothService();
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Log.d("LobbyFragment", "BT not enabled");
+                    Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
+    /**
+     * Establish connection with other device
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     */
+    private void connectDevice(Intent data) {
+        // Get the device MAC address
+        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mBluetoothService.connect(device);
+    }
+
+    public void updateRemoteList(Collection<String> remoteList) {
+        // lba2.add(newRemote);
+        LobbyListAdapter lba2 = new LobbyListAdapter(mContext, remoteList.toArray(new String[]{}));
+        remotesListView.setAdapter(lba2);
+    }
 }
