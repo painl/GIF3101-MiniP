@@ -9,7 +9,7 @@
     </style>
 
     <style name="BlueButton" parent="Base.Widget.AppCompat.Button.Colored">
-        <!--item name="android:background">@drawable/blue_button_background</item-->
+        <item name="android:background">@drawable/blue_button_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">false</item>
