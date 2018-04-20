@@ -96,4 +96,57 @@ public class Referee {
         }
         return choosenOne;
     }
+
+    public List<Player> getDeadPlayers() {
+        List<Player> deadPlayers = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.hasDeathMark() && !player.hasSalvaterMark())
+                deadPlayers.add(player);
+        }
+        return deadPlayers;
+    }
+
+    public List<Player> getAlivePlayers(boolean dying) {
+        List<Player> alivePlayers = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.isAlive() && player.hasDeathMark() == dying)
+                alivePlayers.add(player);
+        }
+        return alivePlayers;
+    }
+
+    public List<Player> getWolfMeals() {
+        List<Player> meals = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.isAlive() && player.getRole().getType() != Role.Type.WOLF)
+                meals.add(player);
+        }
+        return meals;
+    }
+
+    public List<Player> getPlayersToDefend(Player lastProtected) {
+        List<Player> playersToDefend = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.isAlive() && (lastProtected == null || lastProtected.getId() != player.getId()))
+                playersToDefend.add(player);
+        }
+        return playersToDefend;
+    }
+
+    private boolean playerIdInList(int playerId, List<Player> players) {
+        for (Player player: players) {
+            if (player.getId() == playerId)
+                return true;
+        }
+        return false;
+    }
+
+    public List<Player> getPlayersToSee(List<Player> seenPlayers) {
+        List<Player> playersToSee = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.isAlive() && !this.playerIdInList(player.getId(), seenPlayers))
+                playersToSee.add(player);
+        }
+        return playersToSee;
+    }
 }

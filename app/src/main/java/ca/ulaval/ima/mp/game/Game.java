@@ -39,10 +39,12 @@ public class Game {
                 this.witchTurn();
                 this.salvaterTurn();
                 this.psychicTurn();
+                this.endTurn();
                 this.turn++;
             }
             this.time = (this.time == Time.DAY) ? Time.NIGHT : Time.DAY;
         }
+        Role.Side winner = this.referee.getWinner();
     }
 
     public int getNextId() {
@@ -75,7 +77,18 @@ public class Game {
         this.waitForInput();
     }
 
+    private void endTurn() {
+        List<Player> deadPlayers = this.referee.getDeadPlayers();
+        for (Player deadPlayer: deadPlayers) {
+            this.revealDeath(deadPlayer);
+        }
+        for (Player player: this.players) {
+            player.setSalvaterMark(false);
+        }
+    }
+
     private void villagerTurn() {
+        List<Player> choices = this.referee.getAlivePlayers(false);
         this.waitForInput();
     }
 
@@ -91,6 +104,7 @@ public class Game {
     }
 
     private void wolfTurn() {
+        List<Player> meals = this.referee.getWolfMeals();
         this.waitForInput();
     }
 
@@ -107,6 +121,10 @@ public class Game {
     }
 
     private void witchTurn() {
+        if (!this.getPlayerByRole(Role.Type.WITCH).isAlive())
+            return;
+        List<Player> playersToSave = this.referee.getAlivePlayers(true);
+        List<Player> playersToMurder = this.referee.getAlivePlayers(false);
         this.waitForInput();
     }
 
@@ -137,6 +155,10 @@ public class Game {
     }
 
     private void salvaterTurn() {
+        Player salvater = this.getPlayerByRole(Role.Type.SALVATER);
+        if (!salvater.isAlive())
+            return;
+        List<Player> playersToDefend = this.referee.getPlayersToDefend(((Salvater)salvater.getRole()).getLastProtected());
         this.waitForInput();
     }
 
@@ -153,6 +175,10 @@ public class Game {
     }
 
     private void psychicTurn() {
+        Player psychic = this.getPlayerByRole(Role.Type.PSYCHIC);
+        if (!psychic.isAlive())
+            return;
+        List<Player> playersToSee = this.referee.getPlayersToSee(((Psychic)psychic.getRole()).getSeen());
         this.waitForInput();
     }
 
@@ -171,20 +197,8 @@ public class Game {
         this.waitForInput();
     }
 
-    private void setState(State state) {
-        this.state = state;
-    }
-
-    public Time getTime() {
-        return time;
-    }
-
     public int getTurn() {
         return turn;
-    }
-
-    public void setTime(Time time) {
-        this.time = time;
     }
 
     private Player getPlayerById(int id) {

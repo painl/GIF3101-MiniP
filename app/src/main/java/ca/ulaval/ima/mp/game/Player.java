@@ -58,7 +58,7 @@ public class Player {
         this.murderer = murderer;
     }
 
-    public boolean isSalvaterMark() {
+    public boolean hasSalvaterMark() {
         return salvaterMark;
     }
 
