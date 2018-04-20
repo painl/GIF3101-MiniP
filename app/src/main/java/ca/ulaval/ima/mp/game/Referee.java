@@ -2,7 +2,10 @@ package ca.ulaval.ima.mp.game;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import ca.ulaval.ima.mp.game.roles.Psychic;
 import ca.ulaval.ima.mp.game.roles.Role;
@@ -69,5 +72,28 @@ public class Referee {
 
     public boolean isGameProceeding() {
         return (this.wolfAlive() && this.villagerAlive());
+    }
+
+    public int getChoosenPlayerId(List<Integer> votes) {
+        int choosenOne = 0;
+        int frequency = 0;
+        Collections.shuffle(votes);
+        HashMap<Integer, Integer> elementCountMap = new HashMap<Integer, Integer>();
+        for (Integer vote: votes) {
+            if (elementCountMap.containsKey(vote))
+                elementCountMap.put(vote, elementCountMap.get(vote)+1);
+            else
+                elementCountMap.put(vote, 1);
+        }
+        Iterator it = elementCountMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if (((Integer)pair.getKey() > frequency)) {
+                choosenOne = (Integer) pair.getValue();
+                frequency = (Integer) pair.getKey();
+            }
+            it.remove();
+        }
+        return choosenOne;
     }
 }
