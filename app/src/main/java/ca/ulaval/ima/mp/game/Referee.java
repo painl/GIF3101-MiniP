@@ -149,4 +149,13 @@ public class Referee {
         }
         return playersToSee;
     }
+
+    public List<Player> getWolves() {
+        List<Player> wolves = new ArrayList<>();
+        for (Player player: this.game.getPlayers()) {
+            if (player.isAlive() && !this.playerIdInList(player.getId(), wolves))
+                wolves.add(player);
+        }
+        return wolves;
+    }
 }
