@@ -7,11 +7,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
+import java.util.List;
+
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.game.Game;
 
 abstract public class GameActivity extends AppCompatActivity {
 
     protected FrameLayout mFragment;
+    protected Game mGame;
 
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -50,6 +54,10 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public BluetoothService getBluetoothService() {
         return mBluetoothService;
+    }
+
+    public void startGame(List<String> playerNames) {
+        mGame = new Game(this, playerNames);
     }
 
     public boolean fragmentTransit(Fragment transit, boolean toBackStack)

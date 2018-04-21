@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -52,7 +54,7 @@ public class LobbyFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         playerListView = mView.findViewById(R.id.player_list);
-        String[] values = new String[] { "Louis", "Raf", "Antoine", "Babsou"};
+        final String[] values = new String[] { "Louis", "Raf", "Antoine", "Babsou"};
         LobbyListAdapter lba = new LobbyListAdapter(mContext, values);
         playerListView.setAdapter(lba);
         remotesListView = mView.findViewById(R.id.remotes_list);
@@ -79,6 +81,9 @@ public class LobbyFragment extends AbstractFragment {
                 roleMap.put("Babsou", Role.Type.VILLAGER);
                 BluetoothMessage<RoleDispatchMessage> message = new BluetoothMessage<>(new RoleDispatchMessage(roleMap));
                 mBluetoothService.write(message);
+                ArrayList<String> names = new ArrayList<String>();
+                names.add("Louis");names.add("Raf");names.add("Antoine");names.add("Babsou");
+                ((GameActivity)mContext).startGame(names);
             }
         });
     }
