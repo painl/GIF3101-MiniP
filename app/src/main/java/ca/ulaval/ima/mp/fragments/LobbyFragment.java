@@ -23,8 +23,6 @@ import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
 import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
 import ca.ulaval.ima.mp.game.roles.Role;
 
-import static ca.ulaval.ima.mp.bluetooth.BluetoothMessage.MessageType.ROLE_DISPATCH;
-
 public class LobbyFragment extends AbstractFragment {
 
     /**
@@ -74,15 +72,12 @@ public class LobbyFragment extends AbstractFragment {
             @Override
             public void onClick(View view) {
                 // TODO get real roles assignations
-                BluetoothMessage<RoleDispatchMessage> message =
-                        new BluetoothMessage<>(new RoleDispatchMessage(
-                                new HashMap<String, Role.Type>()
-                                {{
-                                    put("Louis", Role.Type.WOLF);
-                                    put("Raf", Role.Type.VILLAGER);
-                                    put("Antoine", Role.Type.VILLAGER);
-                                    put("Babsou", Role.Type.VILLAGER);
-                                }}), ROLE_DISPATCH);
+                HashMap<String, Role.Type>  roleMap = new HashMap<>();
+                roleMap. put("Louis", Role.Type.WOLF);
+                roleMap.put("Raf", Role.Type.VILLAGER);
+                roleMap.put("Antoine", Role.Type.VILLAGER);
+                roleMap.put("Babsou", Role.Type.VILLAGER);
+                BluetoothMessage<RoleDispatchMessage> message = new BluetoothMessage<>(new RoleDispatchMessage(roleMap));
                 mBluetoothService.write(message);
             }
         });

@@ -21,6 +21,7 @@ import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
+import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
 import ca.ulaval.ima.mp.fragments.LobbyFragment;
 import ca.ulaval.ima.mp.fragments.RemoteLobbyFragment;
 
@@ -38,7 +39,7 @@ public class RemoteGameActivity extends GameActivity {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case MESSAGE_STATE_CHANGE:
+                    /*case MESSAGE_STATE_CHANGE:
                         switch (msg.arg1) {
                             case BluetoothService.STATE_CONNECTED:
                                 // setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
@@ -52,23 +53,18 @@ public class RemoteGameActivity extends GameActivity {
                                 // setStatus(R.string.title_not_connected);
                                 break;
                         }
-                        break;
+                        break;*/
                     case MESSAGE_WRITE:
-                        // construct a message from the buffer
-                        BluetoothMessage writeMessage = (BluetoothMessage) msg.obj;
-                        Log.d("TEST", "wrote " + writeMessage.type);
+                        interpretMessage((BluetoothMessage) msg.obj);
                         break;
                     case MESSAGE_READ:
-                        // TODO this should interpret the request of the server
-                        BluetoothMessage readMessage = (BluetoothMessage) msg.obj;
-                        Log.d("TEST", "read " + readMessage.type);
+                        interpretMessage((BluetoothMessage) msg.obj);
+                        break;
                     case MESSAGE_DEVICE_NAME:
                         String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                         String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
                         Log.d("TEST", "Connected to " + mConnectedDeviceName);
                         Toast.makeText(RemoteGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-
-                        // remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
                         break;
                     case MESSAGE_TOAST:
                         Toast.makeText(RemoteGameActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
@@ -93,5 +89,16 @@ public class RemoteGameActivity extends GameActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(mFragment.getId(), RemoteLobbyFragment.newInstance());
         ft.commit();
+    }
+
+    private void interpretMessage(BluetoothMessage message) {
+        // TODO according to the class stored, do stuff
+        Log.d("MESSAGE", "TYPE : "  + message.type);
+        switch (message.type) {
+            case ROLE_DISPATCH:
+                // TODO display all players with roles hidden except on click
+                Toast.makeText(this, ((RoleDispatchMessage)message.content).roles.toString(), Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 }

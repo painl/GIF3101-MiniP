@@ -228,7 +228,7 @@ public class BluetoothService {
      *
      * @param outMessage
      *            The message to write
-     * @see ConnectedThread#write(byte[])
+     * @see ConnectedThread#write(BluetoothMessage)
      */
     public void write(BluetoothMessage outMessage) {
         mHandler.obtainMessage(GameActivity.MESSAGE_WRITE, -1, -1, outMessage).sendToTarget();
@@ -236,19 +236,21 @@ public class BluetoothService {
         byte out[] = outMessage.serialize();
 
         // When writing, try to write out to all connected threads
-        for (int i = 0; i < mConnThreads.size(); i++) {
+        for (Map.Entry<String, ConnectedThread> pair : mConnThreads.entrySet()) {
             try {
+                Log.i(TAG, "SENDING TO THREAD");
                 // Create temporary object
                 ConnectedThread r;
                 // Synchronize a copy of the ConnectedThread
                 synchronized (this) {
                     if (mState != STATE_CONNECTED)
                         return;
-                    r = mConnThreads.get(i);
+                    r = pair.getValue();
                 }
                 // Perform the write unsynchronized
                 r.write(out);
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -473,9 +475,9 @@ public class BluetoothService {
                     bytes = mmInStream.read(buffer);
 
                     int messageLength = ByteBuffer.wrap(buffer).getInt();
-                    buffer = new byte[messageLength];
+                    byte[] content = new byte[messageLength];
 
-                    bytes = mmInStream.read(buffer, bytes, buffer.length);
+                    bytes = mmInStream.read(content);
 
                     // Send the obtained message to the UI Activity
                     if (bytes > 0) {
@@ -483,7 +485,7 @@ public class BluetoothService {
                                 GameActivity.MESSAGE_READ,
                                 bytes,
                                 0,
-                                BluetoothMessage.unserialize(buffer, bytes)).sendToTarget();
+                                BluetoothMessage.unserialize(content, bytes)).sendToTarget();
                         Log.i("**********read", "read Called........");
                     }
                 } catch (IOException e) {

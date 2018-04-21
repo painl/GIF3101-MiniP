@@ -101,7 +101,7 @@ public class ServerGameActivity extends GameActivity {
         switch (message.type) {
             case ROLE_DISPATCH:
                 // TODO display all players with roles hidden except on click
-                Log.d("MESSAGE", ((RoleDispatchMessage)message.content).roles.toString());
+                Toast.makeText(this, ((RoleDispatchMessage)message.content).roles.toString(), Toast.LENGTH_LONG).show();
                 break;
         }
     }

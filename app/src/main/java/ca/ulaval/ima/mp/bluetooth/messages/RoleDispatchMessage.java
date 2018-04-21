@@ -1,15 +1,19 @@
 package ca.ulaval.ima.mp.bluetooth.messages;
 
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
+import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.game.roles.Role;
 
-public class RoleDispatchMessage implements IGameMessage{
+public class RoleDispatchMessage implements IGameMessage {
 
     public Map<String, Role.Type> roles;
 
@@ -18,12 +22,11 @@ public class RoleDispatchMessage implements IGameMessage{
     }
 
     public static RoleDispatchMessage unserialize(byte[] array, int length) {
-
         ByteArrayInputStream byteIn = new ByteArrayInputStream(array);
         ObjectInputStream in;
         try {
             in = new ObjectInputStream(byteIn);
-            Map<String, Role.Type> roles = (Map<String, Role.Type>) in.readObject();
+            Map<String, Role.Type> roles = (HashMap<String, Role.Type>) in.readObject();
             return new RoleDispatchMessage(roles);
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,11 +37,10 @@ public class RoleDispatchMessage implements IGameMessage{
     }
 
     public byte[] serialize() {
-        ObjectOutputStream outputStream;
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
         try {
-            outputStream = new ObjectOutputStream(byteOut);
+            ObjectOutputStream outputStream = new ObjectOutputStream(byteOut);
             outputStream.writeObject( roles );
 
         } catch (IOException e) {
@@ -46,5 +48,9 @@ public class RoleDispatchMessage implements IGameMessage{
         }
 
         return byteOut.toByteArray();
+    }
+
+    public BluetoothMessage.MessageType getType(){
+        return BluetoothMessage.MessageType.ROLE_DISPATCH;
     }
 }

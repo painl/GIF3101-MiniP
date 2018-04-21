@@ -1,5 +1,8 @@
 package ca.ulaval.ima.mp.bluetooth;
 
+import android.util.Log;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -23,9 +26,9 @@ public class BluetoothMessage<M extends IGameMessage> {
 
     public MessageType type;
 
-    public BluetoothMessage(M message, MessageType type) {
+    public BluetoothMessage(M message) {
         this.content = message;
-        this.type = type;
+        this.type = message.getType();
     }
 
     byte[] serialize() {
@@ -49,14 +52,11 @@ public class BluetoothMessage<M extends IGameMessage> {
     }
 
     static BluetoothMessage unserialize(byte[] array, int length) {
-
         byte[] content = Arrays.copyOfRange(array, 1, array.length);
+
         switch ((int) array[0]) {
             case 0:
-                BluetoothMessage<RoleDispatchMessage> message =
-                        new BluetoothMessage<>(RoleDispatchMessage.unserialize(content, length), MessageType.ROLE_DISPATCH);
-                message.type = MessageType.ROLE_DISPATCH;
-                return message;
+                return new BluetoothMessage<>(RoleDispatchMessage.unserialize(content, length));
         }
         return null;
     }
