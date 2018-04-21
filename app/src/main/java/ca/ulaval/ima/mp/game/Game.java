@@ -2,6 +2,7 @@ package ca.ulaval.ima.mp.game;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.ulaval.ima.mp.game.roles.Psychic;
@@ -17,7 +18,7 @@ public class Game {
     private Context mContext;
 
     private final Referee       referee;
-    private final List<Player>  players;
+    private List<Player>        players;
     private State               state;
     private Time                time;
     private int                 turn;
@@ -25,6 +26,7 @@ public class Game {
     public Game(Context context, List<String> names) {
         this.mContext = context;
         this.referee = new Referee(this);
+        this.players = new ArrayList<>();
         this.players = this.referee.dispatchRoles(names);
         this.state = State.RUNNING;
         this.time = Time.DAY;
