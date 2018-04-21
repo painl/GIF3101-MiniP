@@ -104,6 +104,7 @@ public class Game {
     }
 
     private void wolfTurn() {
+        List<Player> wolves = this.referee.getWolves();
         List<Player> meals = this.referee.getWolfMeals();
         this.waitForInput();
     }
