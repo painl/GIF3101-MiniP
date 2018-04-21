@@ -1,5 +1,6 @@
 package ca.ulaval.ima.mp.game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.ulaval.ima.mp.game.roles.Psychic;
@@ -13,13 +14,14 @@ public class Game {
     public enum Time {DAY, NIGHT}
 
     private final Referee       referee;
-    private final List<Player>  players;
+    private List<Player>        players;
     private State               state;
     private Time                time;
     private int                 turn;
 
     public Game(List<String> names) {
         this.referee = new Referee(this);
+        this.players = new ArrayList<>();
         this.players = this.referee.dispatchRoles(names);
         this.state = State.RUNNING;
         this.time = Time.DAY;
