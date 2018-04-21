@@ -12,12 +12,18 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.adapters.LobbyListAdapter;
+import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
+import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
+import ca.ulaval.ima.mp.game.roles.Role;
+
+import static ca.ulaval.ima.mp.bluetooth.BluetoothMessage.MessageType.ROLE_DISPATCH;
 
 public class LobbyFragment extends AbstractFragment {
 
@@ -53,12 +59,31 @@ public class LobbyFragment extends AbstractFragment {
         playerListView.setAdapter(lba);
         remotesListView = mView.findViewById(R.id.remotes_list);
         Button remoteButton = view.findViewById(R.id.btn_add_remote);
+        Button playBtn = view.findViewById(R.id.btn_launch_game);
+
         remoteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (mBluetoothService != null) {
                     Intent serverIntent = new Intent(getActivity(), DeviceListActivity.class);
                     startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                 }
+            }
+        });
+
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO get real roles assignations
+                BluetoothMessage<RoleDispatchMessage> message =
+                        new BluetoothMessage<>(new RoleDispatchMessage(
+                                new HashMap<String, Role.Type>()
+                                {{
+                                    put("Louis", Role.Type.WOLF);
+                                    put("Raf", Role.Type.VILLAGER);
+                                    put("Antoine", Role.Type.VILLAGER);
+                                    put("Babsou", Role.Type.VILLAGER);
+                                }}), ROLE_DISPATCH);
+                mBluetoothService.write(message);
             }
         });
     }
@@ -163,7 +188,6 @@ public class LobbyFragment extends AbstractFragment {
     }
 
     public void updateRemoteList(Collection<String> remoteList) {
-        // lba2.add(newRemote);
         LobbyListAdapter lba2 = new LobbyListAdapter(mContext, remoteList.toArray(new String[]{}));
         remotesListView.setAdapter(lba2);
     }

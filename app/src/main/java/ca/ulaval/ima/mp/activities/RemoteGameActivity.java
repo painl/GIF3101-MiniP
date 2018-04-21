@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import ca.ulaval.ima.mp.R;
+import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
 import ca.ulaval.ima.mp.fragments.LobbyFragment;
@@ -53,18 +54,14 @@ public class RemoteGameActivity extends GameActivity {
                         }
                         break;
                     case MESSAGE_WRITE:
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
-                        // mConversationArrayAdapter.add("Me:  " + writeMessage);
+                        // construct a message from the buffer
+                        BluetoothMessage writeMessage = (BluetoothMessage) msg.obj;
+                        Log.d("TEST", "wrote " + writeMessage.type);
                         break;
                     case MESSAGE_READ:
                         // TODO this should interpret the request of the server
-                        byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        // mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
-                        break;
+                        BluetoothMessage readMessage = (BluetoothMessage) msg.obj;
+                        Log.d("TEST", "read " + readMessage.type);
                     case MESSAGE_DEVICE_NAME:
                         String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                         String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);

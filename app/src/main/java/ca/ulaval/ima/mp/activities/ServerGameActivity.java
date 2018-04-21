@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
 import ca.ulaval.ima.mp.fragments.LobbyFragment;
 import ca.ulaval.ima.mp.fragments.RemoteLobbyFragment;
 
@@ -24,12 +26,8 @@ public class ServerGameActivity extends GameActivity {
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                LobbyFragment lobbyFrag;
-                String mConnectedDeviceName;
-                String mConnectedDeviceAddress;
-
                 switch (msg.what) {
-                    case MESSAGE_STATE_CHANGE:
+                    /*case MESSAGE_STATE_CHANGE:
                         switch (msg.arg1) {
                             case BluetoothService.STATE_CONNECTED:
                                 // setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
@@ -43,46 +41,18 @@ public class ServerGameActivity extends GameActivity {
                                 // setStatus(R.string.title_not_connected);
                                 break;
                         }
-                        break;
+                        break;*/
                     case MESSAGE_WRITE:
-                        // TODO this should display the same thing as in the remote Activity
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        // TODO create custom object for commands : -> page to go to, -> list of players
-                        String writeMessage = new String(writeBuf);
-                        // mConversationArrayAdapter.add("Me:  " + writeMessage);
+                        interpretMessage((BluetoothMessage) msg.obj);
                         break;
                     case MESSAGE_READ:
-                        // TODO this should interpret the response of the client
-                        byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
-                        // TODO create custom object for responses : -> player selected
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        // mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                        interpretMessage((BluetoothMessage) msg.obj);
                         break;
                     case MESSAGE_DEVICE_NAME:
-                        mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                        mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
-                        Log.d("TEST", "Connected to " + mConnectedDeviceName);
-                        Toast.makeText(ServerGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-
-                        remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
-                        lobbyFrag = (LobbyFragment) getSupportFragmentManager().findFragmentById(mFragment.getId());
-                        if (lobbyFrag != null) {
-                            lobbyFrag.updateRemoteList(remotes.values());
-                        }
+                        remoteConnected(msg);
                         break;
                     case LOST_DEVICE:
-                        mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                        mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
-                        Log.d("TEST", "Disconnected to " + mConnectedDeviceName);
-                        Toast.makeText(ServerGameActivity.this, "Disconnected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-
-                        remotes.remove(mConnectedDeviceAddress);
-                        lobbyFrag = (LobbyFragment) getSupportFragmentManager().findFragmentById(mFragment.getId());
-                        if (lobbyFrag != null) {
-                            lobbyFrag.updateRemoteList(remotes.values());
-                        }
+                        remoteDisconnected(msg);
                         break;
                     case MESSAGE_TOAST:
                         Toast.makeText(ServerGameActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
@@ -99,5 +69,40 @@ public class ServerGameActivity extends GameActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(mFragment.getId(), LobbyFragment.newInstance());
         ft.commit();
+    }
+
+    private void remoteConnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+        String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
+        Toast.makeText(ServerGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
+        ServerGameActivity.this.updateRemoteList();
+    }
+
+    private void remoteDisconnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+        String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
+        Toast.makeText(ServerGameActivity.this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        remotes.remove(mConnectedDeviceAddress);
+        ServerGameActivity.this.updateRemoteList();
+    }
+
+    private void updateRemoteList() {
+        LobbyFragment lobbyFrag = (LobbyFragment) getSupportFragmentManager()
+                .findFragmentById(mFragment.getId());
+        if (lobbyFrag != null) {
+            lobbyFrag.updateRemoteList(remotes.values());
+        }
+    }
+
+    private void interpretMessage(BluetoothMessage message) {
+        // TODO according to the class stored, do stuff
+        Log.d("MESSAGE", "TYPE : "  + message.type);
+        switch (message.type) {
+            case ROLE_DISPATCH:
+                // TODO display all players with roles hidden except on click
+                Log.d("MESSAGE", ((RoleDispatchMessage)message.content).roles.toString());
+                break;
+        }
     }
 }
