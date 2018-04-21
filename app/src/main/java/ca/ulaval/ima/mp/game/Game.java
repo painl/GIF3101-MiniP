@@ -89,6 +89,7 @@ public class Game {
 
     private void villagerTurn() {
         List<Player> choices = this.referee.getAlivePlayers(false);
+        // send Choices
         this.waitForInput();
     }
 
@@ -105,6 +106,7 @@ public class Game {
 
     private void wolfTurn() {
         List<Player> meals = this.referee.getWolfMeals();
+        // send Meals
         this.waitForInput();
     }
 
