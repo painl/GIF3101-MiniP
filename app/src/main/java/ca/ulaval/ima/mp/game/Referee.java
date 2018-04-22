@@ -1,5 +1,7 @@
 package ca.ulaval.ima.mp.game;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class Referee {
 
     private boolean wolfAlive() {
         for (Player player: this.game.getPlayers()) {
-            if (player.getRole().getType() == Role.Type.WOLF && player.isAlive())
+            if (player.getRole().getSide() == Role.Side.WOLF && player.isAlive())
                 return true;
         }
         return false;
@@ -59,7 +61,7 @@ public class Referee {
 
     private boolean villagerAlive() {
         for (Player player: this.game.getPlayers()) {
-            if (player.getRole().getType() == Role.Type.VILLAGER && player.isAlive())
+            if (player.getRole().getSide() == Role.Side.VILLAGER && player.isAlive())
                 return true;
         }
         return false;

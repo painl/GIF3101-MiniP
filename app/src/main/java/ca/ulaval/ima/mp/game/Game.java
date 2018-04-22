@@ -1,10 +1,13 @@
 package ca.ulaval.ima.mp.game;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.game.roles.Psychic;
@@ -15,15 +18,17 @@ import ca.ulaval.ima.mp.game.roles.Witch;
 public class Game {
 
     public enum State {RUNNING, WAITING}
+
     public enum Time {DAY, NIGHT}
 
     private Context mContext;
 
-    private final Referee       referee;
-    private List<Player>        players;
-    private State               state;
-    private Time                time;
-    private int                 turn;
+    private final Referee referee;
+    private List<Player> players;
+    private State state;
+    private Time time;
+    private int turn;
+    private CountDownLatch latch;
 
     public Game(Context context, List<String> names) {
         this.mContext = context;
@@ -33,17 +38,36 @@ public class Game {
         this.state = State.RUNNING;
         this.time = Time.DAY;
         this.turn = 0;
-        ((GameActivity)mContext).startRolesStep(players);
+        latch = new CountDownLatch(1);
+        ((GameActivity) mContext).startRolesStep(players);
     }
 
     public void play() {
+  //      while (referee.isGameProceeding()) {
+            if (time == Time.DAY) {
+                debateTurn();
+//                if (this.turn != 0)
+                //                  this.villagerTurn();
+            } else if (time == Time.NIGHT) {
+                this.wolfTurn();
+                //          this.witchTurn();
+                //        this.salvaterTurn();
+                //      this.psychicTurn();
+                //    this.endTurn();
+                turn++;
+            }
+            time = (time == Time.DAY) ? Time.NIGHT : Time.DAY;
+            //      }
+            Role.Side winner = referee.getWinner();
+    }
+
+    public void play_cpy() {
         while (this.referee.isGameProceeding()) {
             if (this.time == Time.DAY) {
                 this.debateTurn();
                 if (this.turn != 0)
                     this.villagerTurn();
-            }
-            else if (this.time == Time.NIGHT) {
+            } else if (this.time == Time.NIGHT) {
                 this.wolfTurn();
                 this.witchTurn();
                 this.salvaterTurn();
@@ -58,7 +82,7 @@ public class Game {
 
     public int getNextId() {
         int id = -1;
-        for (Player player: this.players) {
+        for (Player player : this.players) {
             if (player.getId() > id)
                 id = player.getId();
         }
@@ -73,7 +97,7 @@ public class Game {
     /**
      * Has to be called if there is no particular data that the game needs to know. E.G: When the user taps "NEXT" after the game reveals a death.
      */
-    public void nextState() {
+    synchronized public void nextState() {
         this.state = State.RUNNING;
     }
 
@@ -83,18 +107,18 @@ public class Game {
     }
 
     private void debateTurn() {
-        ((GameActivity)mContext).startDebateStep();
+        ((GameActivity) mContext).startDebateStep();
         this.waitForInput();
     }
 
     private void endTurn() {
         List<Player> deadPlayers = this.referee.getDeadPlayers();
-        for (Player deadPlayer: deadPlayers) {
+        for (Player deadPlayer : deadPlayers) {
             this.revealDeath(deadPlayer);
         }
-        for (Player player: this.players) {
+/*        for (Player player: this.players) {
             player.setSalvaterMark(false);
-        }
+        }*/
     }
 
     private void villagerTurn() {
@@ -105,6 +129,7 @@ public class Game {
 
     /**
      * Has to to be called after all villagers has voted.
+     *
      * @param votes List of Player IDs chosen
      */
     public void villagerVoted(List<Integer> votes) {
@@ -117,12 +142,13 @@ public class Game {
     private void wolfTurn() {
         List<Player> wolves = this.referee.getWolves();
         List<Player> meals = this.referee.getWolfMeals();
-     //   ((GameActivity)mContext).startWolvesStep(wolves, meals);
+        //   ((GameActivity)mContext).startWolvesStep(wolves, meals);
         this.waitForInput();
     }
 
     /**
      * Has to be called after all wolves has voted.
+     *
      * @param votes List of Player IDs chosen by each wolf.
      */
     public void wolfPlayed(List<Integer> votes) {
@@ -143,21 +169,21 @@ public class Game {
 
     /**
      * Has to be called after the witch ended her turn.
+     *
      * @param potions List of Potions that the witch used. The list's size must be 2. If a potion is not used, it must be set to null.
      */
     public void witchPlayed(List<Potion> potions) {
-        for (Potion potion: potions) {
+        for (Potion potion : potions) {
             if (potion != null) {
                 if (potion.getType() == Potion.Type.LIFE) {
                     Player target = this.getPlayerById(potion.getTarget());
-                    Witch witch = (Witch)this.getPlayerByRole(Role.Type.WITCH).getRole();
+                    Witch witch = (Witch) this.getPlayerByRole(Role.Type.WITCH).getRole();
                     target.setDeathMark(false);
                     target.setMurderer(null);
                     witch.setLifePotion(false);
-                }
-                else if (potion.getType() == Potion.Type.DEATH) {
+                } else if (potion.getType() == Potion.Type.DEATH) {
                     Player target = this.getPlayerById(potion.getTarget());
-                    Witch witch = (Witch)this.getPlayerByRole(Role.Type.WITCH).getRole();
+                    Witch witch = (Witch) this.getPlayerByRole(Role.Type.WITCH).getRole();
                     target.setDeathMark(true);
                     target.setMurderer(Role.Type.WITCH);
                     witch.setDeathPotion(false);
@@ -171,17 +197,18 @@ public class Game {
         Player salvater = this.getPlayerByRole(Role.Type.SALVATER);
         if (!salvater.isAlive())
             return;
-        List<Player> playersToDefend = this.referee.getPlayersToDefend(((Salvater)salvater.getRole()).getLastProtected());
+        List<Player> playersToDefend = this.referee.getPlayersToDefend(((Salvater) salvater.getRole()).getLastProtected());
         this.waitForInput();
     }
 
     /**
      * Has to be called after the salvater ended his turn.
+     *
      * @param targetId The ID of the target protected by the salvater.
      */
     public void salvaterPlayed(int targetId) {
         Player target = this.getPlayerById(targetId);
-        Salvater salvater = (Salvater)this.getPlayerByRole(Role.Type.SALVATER).getRole();
+        Salvater salvater = (Salvater) this.getPlayerByRole(Role.Type.SALVATER).getRole();
         target.setSalvaterMark(true);
         salvater.setLastProtected(target);
         this.state = State.RUNNING;
@@ -191,17 +218,18 @@ public class Game {
         Player psychic = this.getPlayerByRole(Role.Type.PSYCHIC);
         if (!psychic.isAlive())
             return;
-        List<Player> playersToSee = this.referee.getPlayersToSee(((Psychic)psychic.getRole()).getSeen());
+        List<Player> playersToSee = this.referee.getPlayersToSee(((Psychic) psychic.getRole()).getSeen());
         this.waitForInput();
     }
 
     /**
      * Has to be called after the psychic ended her turn.
+     *
      * @param targetId The ID of the target seen by the psychic.
      */
     public void psychicPlayed(int targetId) {
         Player target = this.getPlayerById(targetId);
-        Psychic psychic = (Psychic)this.getPlayerByRole(Role.Type.PSYCHIC).getRole();
+        Psychic psychic = (Psychic) this.getPlayerByRole(Role.Type.PSYCHIC).getRole();
         psychic.addSeen(target);
         this.revealRole(target);
     }
@@ -215,7 +243,7 @@ public class Game {
     }
 
     private Player getPlayerById(int id) {
-        for(Player player: this.players) {
+        for (Player player : this.players) {
             if (player.getId() == id)
                 return player;
         }
@@ -223,15 +251,21 @@ public class Game {
     }
 
     private Player getPlayerByRole(Role.Type type) {
-        for(Player player: this.players) {
+        for (Player player : this.players) {
             if (player.getRole().getType() == type)
                 return player;
         }
         return null;
     }
 
-    private void waitForInput() {
+    synchronized private void waitForInput() {
         this.state = State.WAITING;
-        while(this.state == State.WAITING){}
+        while (this.state == State.WAITING) {
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

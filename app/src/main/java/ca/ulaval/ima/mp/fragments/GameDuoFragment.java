@@ -45,12 +45,14 @@ public class GameDuoFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListView listView = mView.findViewById(R.id.list_names);
-        ArrayList<String> names = new ArrayList<>();
-        for (Player p : mPlayers)
-            names.add(p.getName());
-        DuoNamesListAdapter dla = new DuoNamesListAdapter(mContext, names, ((GameActivity)mContext).mSeenState.validates);
-        listView.setAdapter(dla);
-        Utils.justifyListViewHeightBasedOnChildren(listView);
+        if (mChoice != CHOICE_MODE.DEBATE) {
+            ArrayList<String> names = new ArrayList<>();
+            for (Player p : mPlayers)
+                names.add(p.getName());
+            DuoNamesListAdapter dla = new DuoNamesListAdapter(mContext, names, ((GameActivity) mContext).mSeenState.validates);
+            listView.setAdapter(dla);
+            Utils.justifyListViewHeightBasedOnChildren(listView);
+        }
         ImageView icone = mView.findViewById(R.id.icn);
         TextView text = mView.findViewById(R.id.text);
         AppCompatButton btn = mView.findViewById(R.id.btn_next);
@@ -71,7 +73,6 @@ public class GameDuoFragment extends AbstractFragment {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("tag", "gogogo");
                         ((GameActivity)mContext).getGame().play();
                     }
                 });
@@ -84,11 +85,17 @@ public class GameDuoFragment extends AbstractFragment {
             case WOLVES:
                 Picasso.get().load(R.drawable.wolf).into(icone);
                 btn.setText("Continuer");
-                text.setText("Loups-Garou, \nAction !");
+                text.setText("C'est la nuit. Loups-Garou, \nAction !");
                 break ;
             case DEBATE:
                 Picasso.get().load(R.drawable.villager).into(icone);
                 btn.setText("Continuer");
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //((GameActivity)mContext).passStep();
+                    }
+                });
                 text.setText("Débat...");
                 listView.setVisibility(View.GONE);
         }

@@ -113,7 +113,12 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public void startDebateStep()
     {
-        this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), true);
+        this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), false);
+    }
+
+    public void passStep()
+    {
+        this.getGame().nextState();
     }
 
     public Game getGame()
