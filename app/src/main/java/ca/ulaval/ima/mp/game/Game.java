@@ -34,7 +34,7 @@ public class Game {
         this.mContext = context;
         this.referee = new Referee(this);
         this.players = new ArrayList<>();
-        this.players = this.referee.dispatchRoles(names);
+        this.referee.dispatchRoles(this.players, names);
         this.state = State.RUNNING;
         this.time = Time.DAY;
         this.turn = 0;
@@ -104,11 +104,6 @@ public class Game {
         this.state = State.RUNNING;
     }
 
-    private void revealDeath(Player deadPlayer) {
-        deadPlayer.setAlive(false);
-        this.waitForInput();
-    }
-
     private void debateTurn() {
         ((GameActivity) mContext).startDebateStep();
     }
@@ -117,7 +112,6 @@ public class Game {
         List<Player> deadPlayers = this.referee.getDeadPlayers();
         for (Player deadPlayer : deadPlayers) {
             deadPlayer.setAlive(false);
-            //this.revealDeath(deadPlayer);
         }
         ((GameActivity)mContext).startDeathStep(deadPlayers, Time.NIGHT);
         this.turn++;
@@ -138,11 +132,14 @@ public class Game {
      */
     public void villagerVoted(List<Integer> votes) {
         int chosenOne = this.referee.getChoosenPlayerId(votes);
+        Log.d("chooseOne", String.valueOf(chosenOne));
         Player player = this.getPlayerById(chosenOne);
         player.setDeathMark(true);
         player.setMurderer(Role.Type.VILLAGER);
-        List<Player> deadPlayers = new ArrayList<>();
-        deadPlayers.add(player);
+        List<Player> deadPlayers = this.referee.getDeadPlayers();
+        for (Player deadPlayer : deadPlayers) {
+            deadPlayer.setAlive(false);
+        }
         ((GameActivity)mContext).startDeathStep(deadPlayers, Time.DAY);
     }
 
@@ -159,6 +156,7 @@ public class Game {
      */
     public void wolfPlayed(List<Integer> votes) {
         int chosenOne = this.referee.getChoosenPlayerId(votes);
+        Log.d("WOLF MEAL =>", String.valueOf(chosenOne));
         Player player = this.getPlayerById(chosenOne);
         player.setDeathMark(true);
         player.setMurderer(Role.Type.WOLF);
@@ -166,10 +164,11 @@ public class Game {
     }
 
     private void witchTurn() {
-        if (!this.getPlayerByRole(Role.Type.WITCH).isAlive())
+        Player witch = this.getPlayerByRole(Role.Type.WITCH);
+        if (!witch.isAlive())
             return;
-        List<Player> playersToSave = this.referee.getAlivePlayers(true);
-        List<Player> playersToMurder = this.referee.getAlivePlayers(false);
+        List<Player> playersToSave = (((Witch)witch.getRole()).hasLifePotion()) ? this.referee.getAlivePlayers(true) : null;
+        List<Player> playersToMurder = (((Witch)witch.getRole()).hasDeathPotion()) ? this.referee.getAlivePlayers(false) : null;
         this.waitForInput();
     }
 

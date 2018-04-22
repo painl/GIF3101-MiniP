@@ -24,8 +24,7 @@ public class Referee {
         this.game = game;
     }
 
-    public List<Player> dispatchRoles(List<String> names) {
-        List<Player> players = new ArrayList<>();
+    public void dispatchRoles(List<Player> players, List<String> names) {
         Collections.shuffle(names);
         if (names.size() == 3) {
             players.add(new Player(this.game.getNextId(), names.get(0), new Wolf()));
@@ -48,7 +47,10 @@ public class Referee {
                 players.add(new Player(this.game.getNextId(), names.get(it), new Villager()));
             }
         }
-        return players;
+        Collections.shuffle(players);
+        for (Player p: players) {
+            Log.d(p.getName(), String.valueOf(p.getId())+" / Role = "+p.getRole().getType());
+        }
     }
 
     private boolean wolfAlive() {
@@ -80,7 +82,7 @@ public class Referee {
         int choosenOne = 0;
         int frequency = 0;
         Collections.shuffle(votes);
-        HashMap<Integer, Integer> elementCountMap = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> elementCountMap = new HashMap<>();
         for (Integer vote: votes) {
             if (elementCountMap.containsKey(vote))
                 elementCountMap.put(vote, elementCountMap.get(vote)+1);
@@ -90,9 +92,9 @@ public class Referee {
         Iterator it = elementCountMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            if (((Integer)pair.getKey() > frequency)) {
-                choosenOne = (Integer) pair.getValue();
-                frequency = (Integer) pair.getKey();
+            if (((Integer)pair.getValue() > frequency)) {
+                choosenOne = (Integer) pair.getKey();
+                frequency = (Integer) pair.getValue();
             }
             it.remove();
         }
@@ -102,7 +104,7 @@ public class Referee {
     public List<Player> getDeadPlayers() {
         List<Player> deadPlayers = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
-            if (player.hasDeathMark() && !player.hasSalvaterMark())
+            if (player.isAlive() && player.hasDeathMark() && !player.hasSalvaterMark())
                 deadPlayers.add(player);
         }
         return deadPlayers;
@@ -155,7 +157,7 @@ public class Referee {
     public List<Player> getWolves() {
         List<Player> wolves = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
-            if (player.isAlive() && !this.playerIdInList(player.getId(), wolves))
+            if (player.isAlive() && player.getRole().getType() == Role.Type.WOLF)
                 wolves.add(player);
         }
         return wolves;
