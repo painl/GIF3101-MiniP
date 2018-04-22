@@ -7,15 +7,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.fragments.GameDuoFragment;
+import ca.ulaval.ima.mp.fragments.RevealRoleFragment;
 import ca.ulaval.ima.mp.game.Game;
+import ca.ulaval.ima.mp.game.Player;
 
 abstract public class GameActivity extends AppCompatActivity {
 
     protected FrameLayout mFragment;
     protected Game mGame;
+    public SeenState mSeenState;
 
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -26,6 +31,27 @@ abstract public class GameActivity extends AppCompatActivity {
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_address";
+
+    public class SeenState
+    {
+        public ArrayList<Player> validates = new ArrayList<>();
+        int nbPlayers;
+        SeenState(int nb)
+        {
+            nbPlayers = nb;
+            for (int i=0; i < nb; i++)
+                validates.add(null);
+        }
+
+        public int getRemaining()
+        {
+            int i = 0;
+            for (Player p : validates)
+                if (p == null)
+                    i++;
+            return i;
+        }
+    }
 
     /**
      * Member object for the service
@@ -72,5 +98,26 @@ abstract public class GameActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    public void startRolesStep(List<Player> players)
+    {
+        mSeenState = new SeenState(players.size());
+        this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.ROLES, players), false);
+    }
+
+    public void startRevealStep(Player player)
+    {
+        this.fragmentTransit(RevealRoleFragment.newInstance(player), true);
+    }
+
+    public void startDebateStep()
+    {
+        this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), true);
+    }
+
+    public Game getGame()
+    {
+        return mGame;
     }
 }

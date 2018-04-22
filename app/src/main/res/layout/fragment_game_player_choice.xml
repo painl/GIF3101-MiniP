@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:id="@+id/fragment_root">
+
+        <ImageView
+            android:layout_marginTop="15dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/icn"/>
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:text="Attribution des rôles.\nQui êtes vous ?"
+            android:layout_marginBottom="12dp"/>
+        
+        <ListView
+            android:id="@+id/list_names"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:divider="@color/colorPrimaryDark"
+            android:dividerHeight="1dp"
+            android:background="@drawable/item_background">
+
+        </ListView>
+
+    </LinearLayout>
+</ScrollView>

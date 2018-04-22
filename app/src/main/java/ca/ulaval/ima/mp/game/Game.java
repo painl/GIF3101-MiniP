@@ -1,10 +1,12 @@
 package ca.ulaval.ima.mp.game;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.game.roles.Psychic;
 import ca.ulaval.ima.mp.game.roles.Role;
 import ca.ulaval.ima.mp.game.roles.Salvater;
@@ -31,7 +33,7 @@ public class Game {
         this.state = State.RUNNING;
         this.time = Time.DAY;
         this.turn = 0;
-        this.play();
+        ((GameActivity)mContext).startRolesStep(players);
     }
 
     public void play() {
@@ -81,6 +83,7 @@ public class Game {
     }
 
     private void debateTurn() {
+        ((GameActivity)mContext).startDebateStep();
         this.waitForInput();
     }
 
@@ -114,7 +117,7 @@ public class Game {
     private void wolfTurn() {
         List<Player> wolves = this.referee.getWolves();
         List<Player> meals = this.referee.getWolfMeals();
-        // send Meals
+     //   ((GameActivity)mContext).startWolvesStep(wolves, meals);
         this.waitForInput();
     }
 
