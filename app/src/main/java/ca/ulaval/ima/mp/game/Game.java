@@ -28,7 +28,7 @@ public class Game {
     private State state;
     private Time time;
     private int turn;
-    private CountDownLatch latch;
+    public int index;
 
     public Game(Context context, List<String> names) {
         this.mContext = context;
@@ -38,30 +38,33 @@ public class Game {
         this.state = State.RUNNING;
         this.time = Time.DAY;
         this.turn = 0;
-        latch = new CountDownLatch(1);
+        this.index = 1;
         ((GameActivity) mContext).startRolesStep(players);
     }
 
-    public void play() {
-  //      while (referee.isGameProceeding()) {
-            if (time == Time.DAY) {
+    public void play(int index)
+    {
+        if (this.referee.isGameProceeding()) {
+            if (index == 1)
                 debateTurn();
-//                if (this.turn != 0)
-                //                  this.villagerTurn();
-            } else if (time == Time.NIGHT) {
+            else if (index == 3 || (index == 2 && this.turn == 0))
                 this.wolfTurn();
-                //          this.witchTurn();
-                //        this.salvaterTurn();
-                //      this.psychicTurn();
-                //    this.endTurn();
-                turn++;
-            }
-            time = (time == Time.DAY) ? Time.NIGHT : Time.DAY;
-            //      }
+            else if (index == 2)
+                this.villagerTurn();
+    /*       else if (index == 4)
+                this.witchTurn();
+            else if (index == 5)
+                this.psychicTurn(); */
+            else if (index == 6)
+                this.endTurn();
+        }
+        else {
             Role.Side winner = referee.getWinner();
+            ((GameActivity) mContext).startWinStep(winner);
+        }
     }
 
-    public void play_cpy() {
+ /*   public void play_cpy() {
         while (this.referee.isGameProceeding()) {
             if (this.time == Time.DAY) {
                 this.debateTurn();
@@ -78,7 +81,7 @@ public class Game {
             this.time = (this.time == Time.DAY) ? Time.NIGHT : Time.DAY;
         }
         Role.Side winner = this.referee.getWinner();
-    }
+    } */
 
     public int getNextId() {
         int id = -1;
@@ -108,14 +111,16 @@ public class Game {
 
     private void debateTurn() {
         ((GameActivity) mContext).startDebateStep();
-        this.waitForInput();
     }
 
     private void endTurn() {
         List<Player> deadPlayers = this.referee.getDeadPlayers();
         for (Player deadPlayer : deadPlayers) {
-            this.revealDeath(deadPlayer);
+            deadPlayer.setAlive(false);
+            //this.revealDeath(deadPlayer);
         }
+        ((GameActivity)mContext).startDeathStep(deadPlayers, Time.NIGHT);
+        this.turn++;
 /*        for (Player player: this.players) {
             player.setSalvaterMark(false);
         }*/
@@ -123,8 +128,7 @@ public class Game {
 
     private void villagerTurn() {
         List<Player> choices = this.referee.getAlivePlayers(false);
-        // send Choices
-        this.waitForInput();
+        ((GameActivity)mContext).startVotesStep(choices);
     }
 
     /**
@@ -135,15 +139,17 @@ public class Game {
     public void villagerVoted(List<Integer> votes) {
         int chosenOne = this.referee.getChoosenPlayerId(votes);
         Player player = this.getPlayerById(chosenOne);
+        player.setDeathMark(true);
         player.setMurderer(Role.Type.VILLAGER);
-        this.revealDeath(player);
+        List<Player> deadPlayers = new ArrayList<>();
+        deadPlayers.add(player);
+        ((GameActivity)mContext).startDeathStep(deadPlayers, Time.DAY);
     }
 
     private void wolfTurn() {
         List<Player> wolves = this.referee.getWolves();
         List<Player> meals = this.referee.getWolfMeals();
-        //   ((GameActivity)mContext).startWolvesStep(wolves, meals);
-        this.waitForInput();
+        ((GameActivity)mContext).startWolvesStep(wolves, meals);
     }
 
     /**

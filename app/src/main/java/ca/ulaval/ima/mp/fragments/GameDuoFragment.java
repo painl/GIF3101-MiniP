@@ -31,6 +31,7 @@ public class GameDuoFragment extends AbstractFragment {
 
     private CHOICE_MODE mChoice;
     private List<Player> mPlayers;
+    private List<Player> mTargets;
 
     public static GameDuoFragment newInstance(CHOICE_MODE choice, List<Player> players)
     {
@@ -39,6 +40,16 @@ public class GameDuoFragment extends AbstractFragment {
         fragment.mPlayers = players;
         fragment.setLayout(R.layout.fragment_game_pickname);
         return fragment;
+    }
+
+    public void setTargets(List<Player> targets)
+    {
+        this.mTargets = targets;
+    }
+
+    public List<Player> getTargets()
+    {
+        return mTargets;
     }
 
     @Override
@@ -73,7 +84,7 @@ public class GameDuoFragment extends AbstractFragment {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((GameActivity)mContext).getGame().play();
+                        ((GameActivity)mContext).getGame().play(1);
                     }
                 });
                 break ;
@@ -81,11 +92,47 @@ public class GameDuoFragment extends AbstractFragment {
                 Picasso.get().load(R.drawable.villager).into(icone);
                 btn.setText("Continuer");
                 text.setText("C'est le moment des votes.");
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        ((GameActivity)mContext).mSeenState.playerIndex = i;
+                        ((GameActivity)mContext).startTargetStep(mPlayers.get(i).getName(), mTargets, TargetFragment.TARGET_MODE.VOTE);
+                        //((GameActivity)mContext).getGame().play(((GameActivity) mContext).getGame().index + 1);
+                    }
+                });
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<Integer> votes = new ArrayList<>();
+                        for (Player p : ((GameActivity) mContext).mSeenState.validates)
+                            votes.add(p.getId());
+                        ((GameActivity) mContext).getGame().villagerVoted(votes);
+                        //((GameActivity)mContext).getGame().play(((GameActivity) mContext).getGame().index + 1);
+                    }
+                });
                 break ;
             case WOLVES:
                 Picasso.get().load(R.drawable.wolf).into(icone);
                 btn.setText("Continuer");
-                text.setText("C'est la nuit. Loups-Garou, \nAction !");
+                text.setText("C'est la nuit. Loups-Garou, \naction !");
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        ((GameActivity)mContext).mSeenState.playerIndex = i;
+                        ((GameActivity)mContext).startTargetStep(mPlayers.get(i).getName(), mTargets, TargetFragment.TARGET_MODE.WOLF);
+                    }
+                });
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<Integer> votes = new ArrayList<>();
+                        for (Player p : ((GameActivity) mContext).mSeenState.validates)
+                            votes.add(p.getId());
+                        ((GameActivity) mContext).getGame().wolfPlayed(votes);
+                        //((GameActivity)mContext).getGame().play(((GameActivity) mContext).getGame().index + 1);
+                        ((GameActivity) mContext).getGame().play(6);
+                    }
+                });
                 break ;
             case DEBATE:
                 Picasso.get().load(R.drawable.villager).into(icone);
@@ -93,11 +140,12 @@ public class GameDuoFragment extends AbstractFragment {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //((GameActivity)mContext).passStep();
+                        ((GameActivity)mContext).getGame().play(2);
                     }
                 });
                 text.setText("Débat...");
                 listView.setVisibility(View.GONE);
+                break;
         }
     }
 }

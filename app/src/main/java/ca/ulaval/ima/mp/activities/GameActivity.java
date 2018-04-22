@@ -9,12 +9,17 @@ import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.fragments.DeathFragment;
 import ca.ulaval.ima.mp.fragments.GameDuoFragment;
 import ca.ulaval.ima.mp.fragments.RevealRoleFragment;
+import ca.ulaval.ima.mp.fragments.TargetFragment;
+import ca.ulaval.ima.mp.fragments.WinFragment;
 import ca.ulaval.ima.mp.game.Game;
 import ca.ulaval.ima.mp.game.Player;
+import ca.ulaval.ima.mp.game.roles.Role;
 
 abstract public class GameActivity extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ abstract public class GameActivity extends AppCompatActivity {
     {
         public ArrayList<Player> validates = new ArrayList<>();
         int nbPlayers;
+        public int playerIndex = -1;
         SeenState(int nb)
         {
             nbPlayers = nb;
@@ -50,6 +56,11 @@ abstract public class GameActivity extends AppCompatActivity {
                 if (p == null)
                     i++;
             return i;
+        }
+
+        public Player getTargetVote()
+        {
+            return validates.get(playerIndex);
         }
     }
 
@@ -114,6 +125,46 @@ abstract public class GameActivity extends AppCompatActivity {
     public void startDebateStep()
     {
         this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), false);
+    }
+
+    public void startWolvesStep(List<Player> wolves, List<Player> meals)
+    {
+        this.mSeenState = new SeenState(wolves.size());
+        GameDuoFragment wolvesFragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.WOLVES, wolves);
+        wolvesFragment.setTargets(meals);
+        this.fragmentTransit(wolvesFragment, false);
+    }
+
+    public void startVotesStep(List<Player> votes)
+    {
+        this.mSeenState = new SeenState(votes.size());
+        GameDuoFragment fragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.VOTES, votes);
+        fragment.setTargets(votes);
+        this.fragmentTransit(fragment, false);
+    }
+
+    public void startTargetStep(String name, List<Player> targets, TargetFragment.TARGET_MODE mode)
+    {
+        this.fragmentTransit(TargetFragment.newInstance(name, targets, mode), true);
+    }
+
+    public void startDeathStep(List<Player> deads, Game.Time time)
+    {
+        Stack<Player> stack = new Stack<>();
+        stack.addAll(deads);
+        if (stack.size() > 0)
+            this.fragmentTransit(DeathFragment.newInstance(stack, time), false);
+        else {
+            if (time == Game.Time.NIGHT)
+                getGame().play(1);
+            else
+                getGame().play(3);
+        }
+    }
+
+    public void startWinStep(Role.Side winner)
+    {
+        this.fragmentTransit(WinFragment.newInstance(winner), false);
     }
 
     public void passStep()
