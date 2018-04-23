@@ -3,11 +3,15 @@ package ca.ulaval.ima.mp.fragments;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
@@ -37,6 +42,8 @@ public class LobbyFragment extends AbstractFragment {
      */
     public BluetoothService mBluetoothService = null;
 
+    private ArrayList<String> playerList;
+
     private ListView playerListView;
     private ListView remotesListView;
 
@@ -54,12 +61,45 @@ public class LobbyFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         playerListView = mView.findViewById(R.id.player_list);
-        final String[] values = new String[] { "Louis", "Raf", "Antoine", "Babsou"};
-        LobbyListAdapter lba = new LobbyListAdapter(mContext, values);
-        playerListView.setAdapter(lba);
+        playerList = new ArrayList<>();
         remotesListView = mView.findViewById(R.id.remotes_list);
+        Button addPlayerButton = view.findViewById(R.id.btn_add_player);
         Button remoteButton = view.findViewById(R.id.btn_add_remote);
         Button playBtn = view.findViewById(R.id.btn_launch_game);
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        addPlayerButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final View dialogView = inflater.inflate(R.layout.dialog_add_player, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(LobbyFragment.this.getActivity());
+                builder.setTitle("Rentrer le nom du joueur")
+                        .setView(dialogView)
+                        .setPositiveButton("Enregistrer", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                EditText valueView = dialogView.findViewById(R.id.username);
+                                if (valueView != null) {
+                                    String value = valueView.getText().toString();
+
+                                    Log.d("TAST", value);
+
+                                    if (value.length() > 0) {
+                                        playerList.add(value);
+                                        LobbyListAdapter lba = new LobbyListAdapter(mContext, playerList.toArray(new String[]{}));
+                                        playerListView.setAdapter(lba);
+                                    }
+                                }
+                            }
+                        })
+                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
         remoteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -74,16 +114,16 @@ public class LobbyFragment extends AbstractFragment {
             @Override
             public void onClick(View view) {
                 // TODO get real roles assignations
-                HashMap<String, Role.Type>  roleMap = new HashMap<>();
+                /*HashMap<String, Role.Type>  roleMap = new HashMap<>();
                 roleMap. put("Louis", Role.Type.WOLF);
                 roleMap.put("Raf", Role.Type.VILLAGER);
                 roleMap.put("Antoine", Role.Type.VILLAGER);
                 roleMap.put("Babsou", Role.Type.VILLAGER);
                 BluetoothMessage<RoleDispatchMessage> message = new BluetoothMessage<>(new RoleDispatchMessage(roleMap));
-                mBluetoothService.write(message);
-                ArrayList<String> names = new ArrayList<String>();
-                names.add("Louis");names.add("Raf");names.add("Antoine");names.add("Babsou");
-                ((GameActivity)mContext).startGame(names);
+                mBluetoothService.write(message);*/
+
+                if (playerList.size() > 3)
+                    ((GameActivity)mContext).startGame(playerList);
             }
         });
     }
@@ -132,25 +172,6 @@ public class LobbyFragment extends AbstractFragment {
             }
         }
     }
-
-/*    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    } */
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
