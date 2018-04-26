@@ -47,7 +47,6 @@ public class Game {
             }
             this.players.add(new Player(id++, entry.getKey(), newRole));
         }
-        Collections.shuffle(players);
     }
 
     public void play(int index)

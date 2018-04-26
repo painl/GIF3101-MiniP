@@ -63,7 +63,6 @@ public class Referee {
         List<Player>    players = getAlivePlayers(false);
         int frequency = -1;
 
-        // Collections.shuffle(players);
         for (Player player : players) {
             int tmpFrequency = Collections.frequency(votes, player);
             if (tmpFrequency > frequency) {
