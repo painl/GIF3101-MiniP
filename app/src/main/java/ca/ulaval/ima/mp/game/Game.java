@@ -204,7 +204,6 @@ public class Game {
     /**
      * Has to be called after the psychic ended her turn.
      *
-     * @param targetId The ID of the target seen by the psychic.
      */
     /*public void psychicPlayed(int targetId) {
         Player target = this.getPlayerById(targetId);
