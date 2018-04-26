@@ -2,9 +2,9 @@ package ca.ulaval.ima.mp.game.roles;
 
 public abstract class Role implements IRole {
 
-    public enum Side {VILLAGER, WOLF}
+    public enum Side {VILLAGER, WEREWOLF}
 
-    public enum Type {VILLAGER, WITCH, SALVATER, PSYCHIC, WOLF}
+    public enum Type {VILLAGER, WITCH, SALVATER, PSYCHIC, WEREWOLF}
 
     private final String    name;
     private final String    photoName;

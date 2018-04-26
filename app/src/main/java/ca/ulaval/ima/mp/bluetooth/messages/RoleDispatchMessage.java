@@ -1,23 +1,20 @@
 package ca.ulaval.ima.mp.bluetooth.messages;
 
-import android.util.Log;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.game.roles.Role;
 
 public class RoleDispatchMessage implements IGameMessage {
 
-    public Map<String, Role.Type> roles;
+    public LinkedHashMap<String, Role.Type> roles;
 
-    public RoleDispatchMessage(Map<String, Role.Type> roles) {
+    public RoleDispatchMessage(LinkedHashMap<String, Role.Type> roles) {
         this.roles = roles;
     }
 
@@ -26,7 +23,7 @@ public class RoleDispatchMessage implements IGameMessage {
         ObjectInputStream in;
         try {
             in = new ObjectInputStream(byteIn);
-            Map<String, Role.Type> roles = (HashMap<String, Role.Type>) in.readObject();
+            LinkedHashMap<String, Role.Type> roles = (LinkedHashMap<String, Role.Type>) in.readObject();
             return new RoleDispatchMessage(roles);
         } catch (IOException e) {
             e.printStackTrace();

@@ -7,13 +7,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import ca.ulaval.ima.mp.R;
 
 public class LobbyListAdapter extends ArrayAdapter<String> {
     private final Context mContext;
-    private final String[] data;
+    private final ArrayList<String> data;
 
-    public LobbyListAdapter(Context context, String[] values) {
+    public LobbyListAdapter(Context context, ArrayList<String> values) {
         super(context, R.layout.adapter_lobbylist, values);
         this.mContext = context;
         this.data = values;
@@ -25,8 +27,7 @@ public class LobbyListAdapter extends ArrayAdapter<String> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.adapter_lobbylist, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.txt);
-        textView.setText(data[position]);
-        String s = data[position];
+        textView.setText(data.get(position));
         return rowView;
     }
 }

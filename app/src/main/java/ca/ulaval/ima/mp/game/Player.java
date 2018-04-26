@@ -11,6 +11,7 @@ public class Player {
     private boolean         deathMark;
     private boolean         salvaterMark;
     private Role.Type       murderer;
+    private Player          vote;
 
     public Player(int id, String name, Role role) {
         this.id = id;
@@ -64,5 +65,13 @@ public class Player {
 
     public void setSalvaterMark(boolean salvaterMark) {
         this.salvaterMark = salvaterMark;
+    }
+
+    public Player getVote() {
+        return vote;
+    }
+
+    public void setVote(Player vote) {
+        this.vote = vote;
     }
 }

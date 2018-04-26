@@ -18,15 +18,13 @@ import ca.ulaval.ima.mp.game.Player;
 public class DeathFragment extends AbstractFragment {
 
     private Player mPlayer;
-    private List<Player> mDeads = new ArrayList<>();
     private Game.Time mTime;
 
-    public static DeathFragment newInstance(Stack<Player> deads, Game.Time time)
+    public static DeathFragment newInstance(Player dead, Game.Time time)
     {
         DeathFragment fragment = new DeathFragment();
-        fragment.mPlayer = deads.pop();
+        fragment.mPlayer = dead;
         fragment.mTime = time;
-        fragment.mDeads.addAll(deads);
         fragment.setLayout(R.layout.fragment_game_death);
         return fragment;
     }
@@ -51,7 +49,7 @@ public class DeathFragment extends AbstractFragment {
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((GameActivity)mContext).startDeathStep(mDeads, mTime);
+                ((GameActivity)mContext).endDeathStep(mTime);
             }
         });
     }

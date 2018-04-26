@@ -5,13 +5,19 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Stack;
 
+import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.bluetooth.messages.PlayerVoteMessage;
+import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
+import ca.ulaval.ima.mp.bluetooth.messages.StepChangeMessage;
+import ca.ulaval.ima.mp.fragments.AbstractFragment;
 import ca.ulaval.ima.mp.fragments.DeathFragment;
 import ca.ulaval.ima.mp.fragments.GameDuoFragment;
 import ca.ulaval.ima.mp.fragments.RevealRoleFragment;
@@ -93,8 +99,9 @@ abstract public class GameActivity extends AppCompatActivity {
         return mBluetoothService;
     }
 
-    public void startGame(List<String> playerNames) {
-        mGame = new Game(this, playerNames);
+    public void startGame(LinkedHashMap<String, Role.Type> roleMap) {
+        mGame = new Game(this, roleMap);
+        startRolesStep(mGame.getPlayers());
     }
 
     public boolean fragmentTransit(Fragment transit, boolean toBackStack)
@@ -109,6 +116,18 @@ abstract public class GameActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    public void prepareStep(int stepId) {
+        BluetoothMessage<StepChangeMessage> message =
+                new BluetoothMessage<>(new StepChangeMessage(stepId));
+        mBluetoothService.write(message);
+    }
+
+    public void playerVote(int playerId, int targetId) {
+        BluetoothMessage<PlayerVoteMessage> message =
+                new BluetoothMessage<>(new PlayerVoteMessage(playerId, targetId));
+        mBluetoothService.write(message);
     }
 
     public void startRolesStep(List<Player> players)
@@ -129,7 +148,6 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public void startWolvesStep(List<Player> wolves, List<Player> meals)
     {
-        this.mSeenState = new SeenState(wolves.size());
         GameDuoFragment wolvesFragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.WOLVES, wolves);
         wolvesFragment.setTargets(meals);
         this.fragmentTransit(wolvesFragment, false);
@@ -137,29 +155,26 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public void startVotesStep(List<Player> votes)
     {
-        this.mSeenState = new SeenState(votes.size());
         GameDuoFragment fragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.VOTES, votes);
         fragment.setTargets(votes);
         this.fragmentTransit(fragment, false);
     }
 
-    public void startTargetStep(String name, List<Player> targets, TargetFragment.TARGET_MODE mode)
+    public void startTargetStep(Player name, List<Player> targets, TargetFragment.TARGET_MODE mode)
     {
         this.fragmentTransit(TargetFragment.newInstance(name, targets, mode), true);
     }
 
     public void startDeathStep(List<Player> deads, Game.Time time)
     {
-        Stack<Player> stack = new Stack<>();
-        stack.addAll(deads);
-        if (stack.size() > 0)
-            this.fragmentTransit(DeathFragment.newInstance(stack, time), false);
-        else {
-            if (time == Game.Time.NIGHT)
-                getGame().play(1);
-            else
-                getGame().play(3);
-        }
+        this.fragmentTransit(DeathFragment.newInstance(deads.get(0), time), false);
+    }
+
+    public void endDeathStep(Game.Time time) {
+        if (time == Game.Time.NIGHT)
+            prepareStep(1);
+        else
+            prepareStep(3);
     }
 
     public void startWinStep(Role.Side winner)
@@ -167,13 +182,31 @@ abstract public class GameActivity extends AppCompatActivity {
         this.fragmentTransit(WinFragment.newInstance(winner), false);
     }
 
-    public void passStep()
-    {
-        this.getGame().nextState();
-    }
-
     public Game getGame()
     {
         return mGame;
+    }
+
+    protected void interpretMessage(BluetoothMessage message) {
+        Log.d("MESSAGE", "TYPE : "  + message.type);
+        switch (message.type) {
+            case ROLE_DISPATCH:
+                RoleDispatchMessage dispatchMessage = (RoleDispatchMessage)message.content;
+                Log.d("ROLE DISPATCH", "ROLES : " + dispatchMessage.roles);
+                startGame(dispatchMessage.roles);
+                break;
+            case STEP_CHANGE:
+                StepChangeMessage stepChangeMessage = (StepChangeMessage)message.content;
+                Log.d("STEP CHANGE", "STEP : "  + stepChangeMessage.stepId);
+                mGame.play(stepChangeMessage.stepId);
+                break;
+            case PLAYER_VOTE:
+                PlayerVoteMessage voteMessage = (PlayerVoteMessage)message.content;
+                Log.d("PLAYER VOTE", "FROM : "  + voteMessage.playerId + " TO : " + voteMessage.targetId);
+                mGame.playerVote(voteMessage.playerId, voteMessage.targetId);
+                ((AbstractFragment)getSupportFragmentManager()
+                        .findFragmentById(mFragment.getId())).onBluetoothResponse();
+                break;
+        }
     }
 }

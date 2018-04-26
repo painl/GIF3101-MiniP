@@ -1,25 +1,21 @@
 package ca.ulaval.ima.mp.bluetooth;
 
-import android.util.Log;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import ca.ulaval.ima.mp.bluetooth.messages.IGameMessage;
+import ca.ulaval.ima.mp.bluetooth.messages.PlayerVoteMessage;
 import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
+import ca.ulaval.ima.mp.bluetooth.messages.StepChangeMessage;
 
 public class BluetoothMessage<M extends IGameMessage> {
 
     public enum MessageType {
         ROLE_DISPATCH,
-        WEREWOLF_TURN,
-        PLAYER_KILLED,
-        VOTING,
-        WINNING,
-        PLAYER_CHOSEN
+        STEP_CHANGE,
+        PLAYER_VOTE
     }
 
     public M content;
@@ -57,6 +53,10 @@ public class BluetoothMessage<M extends IGameMessage> {
         switch ((int) array[0]) {
             case 0:
                 return new BluetoothMessage<>(RoleDispatchMessage.unserialize(content, length));
+            case 1:
+                return new BluetoothMessage<>(StepChangeMessage.unserialize(content, length));
+            case 2:
+                return new BluetoothMessage<>(PlayerVoteMessage.unserialize(content, length));
         }
         return null;
     }

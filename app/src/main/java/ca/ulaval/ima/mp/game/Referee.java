@@ -1,61 +1,42 @@
 package ca.ulaval.ima.mp.game;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import ca.ulaval.ima.mp.game.roles.Psychic;
 import ca.ulaval.ima.mp.game.roles.Role;
-import ca.ulaval.ima.mp.game.roles.Salvater;
-import ca.ulaval.ima.mp.game.roles.Villager;
-import ca.ulaval.ima.mp.game.roles.Witch;
-import ca.ulaval.ima.mp.game.roles.Wolf;
 
 public class Referee {
 
     private Game game;
 
-    public Referee(Game game) {
+    Referee(Game game) {
         this.game = game;
     }
 
-    public void dispatchRoles(List<Player> players, List<String> names) {
-        Collections.shuffle(names);
-        if (names.size() == 3) {
-            players.add(new Player(this.game.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.game.getNextId(), names.get(1), new Salvater()));
-            players.add(new Player(this.game.getNextId(), names.get(2), new Psychic()));
+    public static LinkedHashMap<String, Role.Type> assignRoles(List<String> names) {
+        List<Role.Type> roles = new ArrayList<>();
+        LinkedHashMap<String, Role.Type> players = new LinkedHashMap<>();
+        int werewolfNb = names.size() % 3;
+        int i;
+
+        for (i = 0; i < werewolfNb; i++) { roles.add(Role.Type.WEREWOLF); }
+        for (; i < names.size(); i++) { roles.add(Role.Type.VILLAGER); }
+
+        Collections.shuffle(roles);
+
+        int index = 0;
+        for (Role.Type role: roles) {
+            players.put(names.get(index++), role);
         }
-        else if (names.size() == 4) {
-            players.add(new Player(this.game.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.game.getNextId(), names.get(1), new Wolf()));
-            players.add(new Player(this.game.getNextId(), names.get(2), new Witch()));
-            players.add(new Player(this.game.getNextId(), names.get(3), new Psychic()));
-        }
-        else {
-            players.add(new Player(this.game.getNextId(), names.get(0), new Wolf()));
-            players.add(new Player(this.game.getNextId(), names.get(1), new Wolf()));
-            players.add(new Player(this.game.getNextId(), names.get(2), new Witch()));
-            players.add(new Player(this.game.getNextId(), names.get(3), new Psychic()));
-            players.add(new Player(this.game.getNextId(), names.get(4), new Salvater()));
-            for (int it = 5; it < names.size(); it++) {
-                players.add(new Player(this.game.getNextId(), names.get(it), new Villager()));
-            }
-        }
-        Collections.shuffle(players);
-        for (Player p: players) {
-            Log.d(p.getName(), String.valueOf(p.getId())+" / Role = "+p.getRole().getType());
-        }
+
+        return players;
     }
 
     private boolean wolfAlive() {
         for (Player player: this.game.getPlayers()) {
-            if (player.getRole().getSide() == Role.Side.WOLF && player.isAlive())
+            if (player.getRole().getSide() == Role.Side.WEREWOLF && player.isAlive())
                 return true;
         }
         return false;
@@ -69,48 +50,42 @@ public class Referee {
         return false;
     }
 
-    public Role.Side getWinner() {
-        Role.Side winner = (this.villagerAlive()) ? Role.Side.VILLAGER : Role.Side.WOLF;
-        return winner;
+    Role.Side getWinner() {
+        return (this.villagerAlive()) ? Role.Side.VILLAGER : Role.Side.WEREWOLF;
     }
 
-    public boolean isGameProceeding() {
+    boolean isGameProceeding() {
         return (this.wolfAlive() && this.villagerAlive());
     }
 
-    public int getChoosenPlayerId(List<Integer> votes) {
-        int choosenOne = 0;
-        int frequency = 0;
-        Collections.shuffle(votes);
-        HashMap<Integer, Integer> elementCountMap = new HashMap<>();
-        for (Integer vote: votes) {
-            if (elementCountMap.containsKey(vote))
-                elementCountMap.put(vote, elementCountMap.get(vote)+1);
-            else
-                elementCountMap.put(vote, 1);
-        }
-        Iterator it = elementCountMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            if (((Integer)pair.getValue() > frequency)) {
-                choosenOne = (Integer) pair.getKey();
-                frequency = (Integer) pair.getValue();
+    Player getChosenPlayer(List<Player> votes) {
+        Player          chosen = null;
+        List<Player>    players = getAlivePlayers(false);
+        int frequency = -1;
+
+        // Collections.shuffle(players);
+        for (Player player : players) {
+            int tmpFrequency = Collections.frequency(votes, player);
+            if (tmpFrequency > frequency) {
+                frequency = tmpFrequency;
+                chosen = player;
             }
-            it.remove();
         }
-        return choosenOne;
+        return chosen;
     }
 
-    public List<Player> getDeadPlayers() {
+    List<Player> getDeadPlayers() {
         List<Player> deadPlayers = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
-            if (player.isAlive() && player.hasDeathMark() && !player.hasSalvaterMark())
+            if (player.isAlive() && player.hasDeathMark() && !player.hasSalvaterMark()) {
                 deadPlayers.add(player);
+                player.setAlive(false);
+            }
         }
         return deadPlayers;
     }
 
-    public List<Player> getAlivePlayers(boolean dying) {
+    List<Player> getAlivePlayers(boolean dying) {
         List<Player> alivePlayers = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
             if (player.isAlive() && player.hasDeathMark() == dying)
@@ -119,16 +94,16 @@ public class Referee {
         return alivePlayers;
     }
 
-    public List<Player> getWolfMeals() {
+    List<Player> getWolfMeals() {
         List<Player> meals = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
-            if (player.isAlive() && player.getRole().getType() != Role.Type.WOLF)
+            if (player.isAlive() && player.getRole().getType() != Role.Type.WEREWOLF)
                 meals.add(player);
         }
         return meals;
     }
 
-    public List<Player> getPlayersToDefend(Player lastProtected) {
+    List<Player> getPlayersToDefend(Player lastProtected) {
         List<Player> playersToDefend = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
             if (player.isAlive() && (lastProtected == null || lastProtected.getId() != player.getId()))
@@ -145,7 +120,7 @@ public class Referee {
         return false;
     }
 
-    public List<Player> getPlayersToSee(List<Player> seenPlayers) {
+    List<Player> getPlayersToSee(List<Player> seenPlayers) {
         List<Player> playersToSee = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
             if (player.isAlive() && !this.playerIdInList(player.getId(), seenPlayers))
@@ -154,10 +129,10 @@ public class Referee {
         return playersToSee;
     }
 
-    public List<Player> getWolves() {
+    List<Player> getWolves() {
         List<Player> wolves = new ArrayList<>();
         for (Player player: this.game.getPlayers()) {
-            if (player.isAlive() && player.getRole().getType() == Role.Type.WOLF)
+            if (player.isAlive() && player.getRole().getType() == Role.Type.WEREWOLF)
                 wolves.add(player);
         }
         return wolves;

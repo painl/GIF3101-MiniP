@@ -24,16 +24,19 @@ import ca.ulaval.ima.mp.utils.Utils;
 public class TargetFragment extends AbstractFragment {
 
     private List<Player> mTargets;
+    private Player targeted;
     private String mName;
+    private int mId;
     private TARGET_MODE mMode;
 
     public enum TARGET_MODE {WOLF, VOTE}
 
-    public static TargetFragment newInstance(String name, List<Player> targets, TARGET_MODE mode)
+    public static TargetFragment newInstance(Player player, List<Player> targets, TARGET_MODE mode)
     {
         TargetFragment fragment = new TargetFragment();
         fragment.mTargets = targets;
-        fragment.mName = name;
+        fragment.mName = player.getName();
+        fragment.mId = player.getId();
         fragment.mMode = mode;
         fragment.setLayout(R.layout.fragment_game_pickname);
         return fragment;
@@ -57,7 +60,7 @@ public class TargetFragment extends AbstractFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ((GameActivity)mContext).mSeenState.validates.set(((GameActivity)mContext).mSeenState.playerIndex, mTargets.get(i));
+                targeted = mTargets.get(i);
                 tla.setSelectedIndex(i);
                 tla.notifyDataSetChanged();
                 if (btn.getVisibility() == View.GONE)
@@ -76,6 +79,9 @@ public class TargetFragment extends AbstractFragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (targeted != null) {
+                    ((GameActivity)mContext).playerVote(mId, targeted.getId());
+                }
                 ((GameActivity)mContext).onBackPressed();
             }
         });

@@ -23,6 +23,7 @@ import java.util.List;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
+import ca.ulaval.ima.mp.activities.ServerGameActivity;
 import ca.ulaval.ima.mp.adapters.LobbyListAdapter;
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
@@ -47,6 +48,9 @@ public class LobbyFragment extends AbstractFragment {
     private ListView playerListView;
     private ListView remotesListView;
 
+    private LobbyListAdapter playerListAdapter;
+    private LobbyListAdapter remoteListAdapter;
+
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_ENABLE_BT = 3;
@@ -62,6 +66,13 @@ public class LobbyFragment extends AbstractFragment {
         super.onViewCreated(view, savedInstanceState);
         playerListView = mView.findViewById(R.id.player_list);
         playerList = new ArrayList<>();
+        playerListAdapter = new LobbyListAdapter(mContext, new ArrayList<String>());
+        remoteListAdapter = new LobbyListAdapter(mContext, new ArrayList<String>());
+
+        addPlayer("Raf");
+        addPlayer("Louis");
+        addPlayer("Antoine");
+        addPlayer("Babou");
         remotesListView = mView.findViewById(R.id.remotes_list);
         Button addPlayerButton = view.findViewById(R.id.btn_add_player);
         Button remoteButton = view.findViewById(R.id.btn_add_remote);
@@ -79,15 +90,7 @@ public class LobbyFragment extends AbstractFragment {
                                 dialog.dismiss();
                                 EditText valueView = dialogView.findViewById(R.id.username);
                                 if (valueView != null) {
-                                    String value = valueView.getText().toString();
-
-                                    Log.d("TAST", value);
-
-                                    if (value.length() > 0) {
-                                        playerList.add(value);
-                                        LobbyListAdapter lba = new LobbyListAdapter(mContext, playerList.toArray(new String[]{}));
-                                        playerListView.setAdapter(lba);
-                                    }
+                                    addPlayer(valueView.getText().toString());
                                 }
                             }
                         })
@@ -115,15 +118,17 @@ public class LobbyFragment extends AbstractFragment {
             public void onClick(View view) {
                 // TODO get real roles assignations
                 /*HashMap<String, Role.Type>  roleMap = new HashMap<>();
-                roleMap. put("Louis", Role.Type.WOLF);
+                roleMap. put("Louis", Role.Type.WEREWOLF);
                 roleMap.put("Raf", Role.Type.VILLAGER);
                 roleMap.put("Antoine", Role.Type.VILLAGER);
                 roleMap.put("Babsou", Role.Type.VILLAGER);
                 BluetoothMessage<RoleDispatchMessage> message = new BluetoothMessage<>(new RoleDispatchMessage(roleMap));
                 mBluetoothService.write(message);*/
 
-                if (playerList.size() > 3)
-                    ((GameActivity)mContext).startGame(playerList);
+                if (playerList.size() > 3) {
+                    ((ServerGameActivity) mContext).prepareGame(playerList);
+                    // ((GameActivity) mContext).startGame(playerList);
+                }
             }
         });
     }
@@ -194,6 +199,14 @@ public class LobbyFragment extends AbstractFragment {
         }
     }
 
+    private void addPlayer(String value) {
+        if (value.length() > 0) {
+            playerList.add(value);
+            playerListAdapter.add(value);
+            playerListView.setAdapter(playerListAdapter);
+        }
+    }
+
     /**
      * Establish connection with other device
      *
@@ -208,8 +221,8 @@ public class LobbyFragment extends AbstractFragment {
         mBluetoothService.connect(device);
     }
 
-    public void updateRemoteList(Collection<String> remoteList) {
-        LobbyListAdapter lba2 = new LobbyListAdapter(mContext, remoteList.toArray(new String[]{}));
+    public void updateRemoteList(ArrayList<String> remoteList) {
+        LobbyListAdapter lba2 = new LobbyListAdapter(mContext, remoteList);
         remotesListView.setAdapter(lba2);
     }
 }

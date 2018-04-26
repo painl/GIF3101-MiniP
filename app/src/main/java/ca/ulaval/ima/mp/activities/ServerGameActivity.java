@@ -8,13 +8,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
+import ca.ulaval.ima.mp.bluetooth.messages.PlayerVoteMessage;
 import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
+import ca.ulaval.ima.mp.bluetooth.messages.StepChangeMessage;
+import ca.ulaval.ima.mp.fragments.AbstractFragment;
 import ca.ulaval.ima.mp.fragments.LobbyFragment;
 import ca.ulaval.ima.mp.fragments.RemoteLobbyFragment;
+import ca.ulaval.ima.mp.game.Referee;
+import ca.ulaval.ima.mp.game.roles.Role;
 
 public class ServerGameActivity extends GameActivity {
 
@@ -27,21 +34,6 @@ public class ServerGameActivity extends GameActivity {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    /*case MESSAGE_STATE_CHANGE:
-                        switch (msg.arg1) {
-                            case BluetoothService.STATE_CONNECTED:
-                                // setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                                // mConversationArrayAdapter.clear();
-                                break;
-                            case BluetoothService.STATE_CONNECTING:
-                                // setStatus(R.string.title_connecting);
-                                break;
-                            case BluetoothService.STATE_LISTEN:
-                            case BluetoothService.STATE_NONE:
-                                // setStatus(R.string.title_not_connected);
-                                break;
-                        }
-                        break;*/
                     case MESSAGE_WRITE:
                         interpretMessage((BluetoothMessage) msg.obj);
                         break;
@@ -87,22 +79,21 @@ public class ServerGameActivity extends GameActivity {
         ServerGameActivity.this.updateRemoteList();
     }
 
-    private void updateRemoteList() {
-        LobbyFragment lobbyFrag = (LobbyFragment) getSupportFragmentManager()
-                .findFragmentById(mFragment.getId());
-        if (lobbyFrag != null) {
-            lobbyFrag.updateRemoteList(remotes.values());
-        }
+    public void prepareGame(List<String> playerNames) {
+        BluetoothMessage<RoleDispatchMessage> message =
+                new BluetoothMessage<>(new RoleDispatchMessage(Referee.assignRoles(playerNames)));
+        mBluetoothService.write(message);
     }
 
-    private void interpretMessage(BluetoothMessage message) {
-        // TODO according to the class stored, do stuff
-        Log.d("MESSAGE", "TYPE : "  + message.type);
-        switch (message.type) {
-            case ROLE_DISPATCH:
-                // TODO display all players with roles hidden except on click
-                Toast.makeText(this, ((RoleDispatchMessage)message.content).roles.toString(), Toast.LENGTH_LONG).show();
-                break;
+    private void updateRemoteList() {
+        try {
+            LobbyFragment lobbyFrag = (LobbyFragment) getSupportFragmentManager()
+                    .findFragmentById(mFragment.getId());
+            if (lobbyFrag != null) {
+                lobbyFrag.updateRemoteList(new ArrayList<>(remotes.values()));
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
     }
 }

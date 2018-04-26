@@ -6,8 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ca.ulaval.ima.mp.R;
-import ca.ulaval.ima.mp.activities.GameActivity;
-import ca.ulaval.ima.mp.game.Player;
 import ca.ulaval.ima.mp.game.roles.Role;
 
 public class WinFragment extends AbstractFragment {
@@ -29,7 +27,7 @@ public class WinFragment extends AbstractFragment {
         TextView textYouAre = mView.findViewById(R.id.txt_you_are);
         switch (mWinner)
         {
-            case WOLF:
+            case WEREWOLF:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
                 textYouAre.setText(textYouAre.getText().toString().replace("...", "Les Loups-Garou"));
                 break;

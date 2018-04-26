@@ -42,4 +42,6 @@ public abstract class AbstractFragment extends Fragment {
         mView = view.findViewById(R.id.fragment_root);
         mContext = getContext();
     }
+
+    public void onBluetoothResponse() {};
 }

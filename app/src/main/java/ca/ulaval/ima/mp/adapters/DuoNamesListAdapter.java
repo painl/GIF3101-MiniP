@@ -13,24 +13,22 @@ import java.util.List;
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.game.Player;
 
-public class DuoNamesListAdapter extends ArrayAdapter<String> {
+public class DuoNamesListAdapter extends ArrayAdapter<Player> {
     private LayoutInflater inflater;
-    private List<Player> mValidates;
     private static class ViewHolder {
         ImageView check;
         TextView name;
     }
 
-    public DuoNamesListAdapter(Context context, List<String> data, List<Player> validates) {
+    public DuoNamesListAdapter(Context context, List<Player> data) {
         super(context, -1, data);
         inflater = LayoutInflater.from(context);
-        mValidates = validates;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String name = getItem(position);
-        Player p = mValidates.get(position);
+        String name = getItem(position).getName();
+        Player p = getItem(position).getVote();
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.adapter_duo_nameslist, parent, false);
