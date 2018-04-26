@@ -26,9 +26,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".bluetooth.DeviceListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.RemoteGameActivity" />
-        <activity android:name=".activities.ServerGameActivity" />
+        <activity
+            android:screenOrientation="portrait" android:name=".activities.RemoteGameActivity" />
+        <activity android:screenOrientation="portrait" android:name=".activities.ServerGameActivity" />
     </application>
 </manifest>
