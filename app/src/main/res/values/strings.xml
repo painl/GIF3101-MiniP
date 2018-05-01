@@ -5,7 +5,7 @@
     <string name="title_stats">Stats</string>
     <string name="title_rules">Règles</string>
 
-    <string name="api_base_url">http://127.0.0.1:3331/</string>
+    <string name="api_base_url">https://bluegarou-api.herokuapp.com/</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>

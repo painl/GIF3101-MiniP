@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import ca.ulaval.ima.mp.R;
-import ca.ulaval.ima.mp.activities.GameActivity;
 import ca.ulaval.ima.mp.activities.MainActivity;
 import ca.ulaval.ima.mp.activities.RemoteGameActivity;
 import ca.ulaval.ima.mp.activities.ServerGameActivity;
@@ -32,7 +31,7 @@ public class HomeFragment extends AbstractFragment {
         authBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(), true);
+                ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(AuthFragment.AUTH.LOGIN), true);
             }
         });
 

@@ -31,7 +31,6 @@ abstract public class GameActivity extends AppCompatActivity {
 
     protected FrameLayout mFragment;
     protected Game mGame;
-    public SeenState mSeenState;
 
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -42,33 +41,6 @@ abstract public class GameActivity extends AppCompatActivity {
     public static final String TOAST = "toast";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_address";
-
-    public class SeenState
-    {
-        public ArrayList<Player> validates = new ArrayList<>();
-        int nbPlayers;
-        public int playerIndex = -1;
-        SeenState(int nb)
-        {
-            nbPlayers = nb;
-            for (int i=0; i < nb; i++)
-                validates.add(null);
-        }
-
-        public int getRemaining()
-        {
-            int i = 0;
-            for (Player p : validates)
-                if (p == null)
-                    i++;
-            return i;
-        }
-
-        public Player getTargetVote()
-        {
-            return validates.get(playerIndex);
-        }
-    }
 
     /**
      * Member object for the service
@@ -132,7 +104,6 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public void startRolesStep(List<Player> players)
     {
-        mSeenState = new SeenState(players.size());
         this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.ROLES, players), false);
     }
 
