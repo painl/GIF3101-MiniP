@@ -39,6 +39,7 @@ public class RemoteGameActivity extends GameActivity {
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.ttsMuted = false;
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
@@ -25,11 +27,12 @@ import ca.ulaval.ima.mp.game.roles.Role;
 
 public class ServerGameActivity extends GameActivity {
 
-    public HashMap<String, String>      remotes;
+    public HashMap<String, String> remotes;
 
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.ttsMuted = true;
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {

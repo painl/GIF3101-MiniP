@@ -2,15 +2,18 @@ package ca.ulaval.ima.mp.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
@@ -27,10 +30,12 @@ import ca.ulaval.ima.mp.game.Game;
 import ca.ulaval.ima.mp.game.Player;
 import ca.ulaval.ima.mp.game.roles.Role;
 
-abstract public class GameActivity extends AppCompatActivity {
+abstract public class GameActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     protected FrameLayout mFragment;
     protected Game mGame;
+    protected TextToSpeech tts;
+    protected boolean ttsMuted;
 
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -57,6 +62,35 @@ abstract public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mBluetoothService = new BluetoothService(this, mHandler);
+        tts = new TextToSpeech(this, this);
+        this.toggleTTS(false);
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.FRANCE);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            }
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    public void toggleTTS(boolean start) {
+        if (this.ttsMuted) {
+            this.tts.setPitch(1.0f);
+            if (!start)
+                Toast.makeText(this, "Voix artificielle activée", Toast.LENGTH_LONG).show();
+        }
+        else {
+            this.tts.setPitch(0.0f);
+            if (!start)
+                Toast.makeText(this, "Voix artificielle désactivée", Toast.LENGTH_LONG).show();
+        }
+        this.ttsMuted = !this.ttsMuted;
     }
 
     @Override
@@ -64,6 +98,10 @@ abstract public class GameActivity extends AppCompatActivity {
         super.onDestroy();
         if (mBluetoothService.getState() != BluetoothService.STATE_NONE) {
             mBluetoothService.stop();
+        }
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
         }
     }
 
@@ -112,9 +150,12 @@ abstract public class GameActivity extends AppCompatActivity {
         this.fragmentTransit(RevealRoleFragment.newInstance(player), true);
     }
 
-    public void startDebateStep()
+    public void startDebateStep(int turn)
     {
+        String speech = "Le jour se lève sur le village.";
+        speech += (turn == 0) ? "Vous sentez qu'un ou plusieurs loups-garous sont cachés parmi vous. Vous devez les trouver. Mais avant, faites connaissances." : "C'est l'heure du débat! Vous avez 10 minutes pour débusquez les intrus";
         this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), false);
+        tts.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void startWolvesStep(List<Player> wolves, List<Player> meals)
@@ -122,6 +163,7 @@ abstract public class GameActivity extends AppCompatActivity {
         GameDuoFragment wolvesFragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.WOLVES, wolves);
         wolvesFragment.setTargets(meals);
         this.fragmentTransit(wolvesFragment, false);
+        tts.speak("La nuit tombe sur le village... Loups-garous, réveillez-vous et choisissez votre victime", TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void startVotesStep(List<Player> votes)
@@ -129,6 +171,7 @@ abstract public class GameActivity extends AppCompatActivity {
         GameDuoFragment fragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.VOTES, votes);
         fragment.setTargets(votes);
         this.fragmentTransit(fragment, false);
+        tts.speak("Qui sera pendu? Votez chacun votre tour", TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void startTargetStep(Player name, List<Player> targets, TargetFragment.TARGET_MODE mode)
@@ -136,9 +179,12 @@ abstract public class GameActivity extends AppCompatActivity {
         this.fragmentTransit(TargetFragment.newInstance(name, targets, mode), true);
     }
 
-    public void startDeathStep(List<Player> deads, Game.Time time)
-    {
+    public void startDeathStep(List<Player> deads, Game.Time time) {
+        Player dead = deads.get(0);
+        String speech = dead.getName() + " est mort ! C'était un ";
+        speech += (dead.getRole().getSide() == Role.Side.WEREWOLF) ? "loup-garou" : "villageois";
         this.fragmentTransit(DeathFragment.newInstance(deads.get(0), time), false);
+        tts.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void endDeathStep(Game.Time time) {
@@ -150,7 +196,9 @@ abstract public class GameActivity extends AppCompatActivity {
 
     public void startWinStep(Role.Side winner)
     {
+        String speech = (winner == Role.Side.WEREWOLF) ? "Les loups-garous ont gagnés!" : "Les villageois ont gagnés!";
         this.fragmentTransit(WinFragment.newInstance(winner), false);
+        tts.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public Game getGame()

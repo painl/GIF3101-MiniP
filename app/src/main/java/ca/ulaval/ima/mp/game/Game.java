@@ -21,13 +21,11 @@ public class Game {
 
     private final Referee referee;
     private List<Player> players;
-    private State state;
     private int turn;
 
     public Game(GameActivity context, LinkedHashMap<String, Role.Type> roleMap) {
         this.mContext = context;
         this.referee = new Referee(this);
-        this.state = State.RUNNING;
         this.turn = 0;
         this.players = new ArrayList<>();
         assignRoles(roleMap);
@@ -74,7 +72,7 @@ public class Game {
 
     private void debateTurn() {
         initVotes();
-        mContext.startDebateStep();
+        mContext.startDebateStep(turn);
     }
 
     private void endTurn() {
@@ -137,7 +135,6 @@ public class Game {
             chosen.setDeathMark(true);
             chosen.setMurderer(Role.Type.WEREWOLF);
         }
-        this.state = State.RUNNING;
     }
 
     /*private void witchTurn() {
