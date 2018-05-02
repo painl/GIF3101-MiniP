@@ -18,7 +18,7 @@ public class Referee {
     public static LinkedHashMap<String, Role.Type> assignRoles(List<String> names) {
         List<Role.Type> roles = new ArrayList<>();
         LinkedHashMap<String, Role.Type> players = new LinkedHashMap<>();
-        int werewolfNb = names.size() % 3;
+        int werewolfNb = names.size() / 3;
         int i;
 
         for (i = 0; i < werewolfNb; i++) { roles.add(Role.Type.WEREWOLF); }
