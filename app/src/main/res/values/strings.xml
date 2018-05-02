@@ -18,4 +18,26 @@
     <string name="title_activity_device_list">DeviceListActivity</string>
     <string name="bt_not_enabled_leaving">Bluetooth not enabled</string>
     <string name="add_remote">Ajouter manette</string>
+
+    <string name="rules">
+        ★ BASES DU JEU ET DE L\'APPLICATION\n\n
+            • Blue-Garou est basé sur le jeu officiel Loup-Garou. C\'est un jeu de plateau qui se joue de 3 à un nombre théoriquement infini de joueurs.\n
+            • Plus besoin de maître du jeu: L\'application se charge de tous les événements de la partie ainsi que son déroulement.\n
+            • La table est trop grande pour que tout le monde accède à un seul téléphone ? Connectez d\'autres téléphones possédant l\'application en Bluetooth pour étendre le plateau de jeu.\n
+            • En vous créant un compte, ayez accès à vos statistiques sur vos parties passées.\n\n
+        ★ RÈGLES DU JEU\n\n
+            • Il existe deux camps: les villageois et les loups-garous. Le but du jeu est d\'éliminer tous les membres du camp adverse.\n
+            • Au début de la partie, chaque joueur se voit attribuer un rôle et rejoint un des deux camps. Son rôle ne doit être révélé si et seulement si il meurt.\n
+            • Une partie se base sur un cycle jour/nuit. La nuit, les loups-garous se réveillent pour manger un villageois. Le jour, tout le monde, y compris les loups-garous, votent pour pendre un joueur.\n
+            • Étant donné que les loups-garous se font passer pour des villageois, le vote de pendaison est précédé d\'un débat de 10 min pour essayer de débusquer les intrus.\n
+            • La nuit, tout le monde ferme les yeux sauf si le jeu appelle certaines personnes à ouvrir les yeux (Les loups-garous sont appelés à manger par exemple).\n
+            • Une personne morte ne peut plus intéragir avec le jeu ou les autres joueurs.\n\n
+        ★ DÉROULEMENT D\'UNE PARTIE\n\n
+            #1 Une personne renseigne le nombre de joueurs, leur nom et des téléphones "manettes" se connectent à l\'hôte pour étendre le plateau de jeu.\n
+            #2 La partie commence, chaque joueur découvre son rôle.\n
+            #3 La nuit tombe, les loups-garous se découvrent et choisissent une victime.\n
+            #4 La personne victime des loups-garous dévoile son rôle au petit matin,\n
+            #5 Les villageois débatent pour débusquer les loups-garous et votent pour une victime de la pendaison au bout de 10 minutes.\n
+            #6 La nuit tombe .... Le jeu continue ainsi jusqu\'à ce que un des deux camps soit éliminé.\n
+    </string>
 </resources>

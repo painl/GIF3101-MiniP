@@ -1,7 +1,9 @@
 package ca.ulaval.ima.mp.fragments;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
+import android.widget.TextView;
 
 import ca.ulaval.ima.mp.R;
 
@@ -17,5 +19,7 @@ public class RulesFragment extends AbstractFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TextView rules = view.findViewById(R.id.rules_text);
+        //rules.setText(Html.fromHtml(getResources().getString(R.string.rules)));
     }
 }
