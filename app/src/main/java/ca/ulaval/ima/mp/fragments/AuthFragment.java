@@ -1,7 +1,10 @@
 package ca.ulaval.ima.mp.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -193,6 +196,13 @@ public class AuthFragment extends AbstractFragment {
             public void onResponse(final JSONObject response) {
                 Log.d("GET_OBJX", response.toString());
                 alertLoaded(1, "Connexion réussie");
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
+                try {
+                    sharedPreferences.edit().putString("access_token", response.getJSONObject("access_token").getString("token")).commit();
+                    BlueGarouApplication.getInstance().setAuth(true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

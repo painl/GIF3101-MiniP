@@ -7,12 +7,14 @@ import ca.ulaval.ima.mp.network.WebService;
 public class BlueGarouApplication extends Application {
     private static BlueGarouApplication mInstance;
     private WebService mWebService;
+    private boolean auth;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
         mInstance.mWebService = new WebService(mInstance.getApplicationContext());
+        auth = false;
     }
 
     public synchronized WebService getWebService()
@@ -23,5 +25,14 @@ public class BlueGarouApplication extends Application {
     public static synchronized BlueGarouApplication getInstance() {
         mInstance.mWebService.initRequestQueue(mInstance.getApplicationContext());
         return mInstance;
+    }
+
+    public void setAuth(boolean auth) {
+        this.auth = auth;
+    }
+
+    public boolean getAuth()
+    {
+        return this.auth;
     }
 }
