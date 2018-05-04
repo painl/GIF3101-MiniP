@@ -1,12 +1,5 @@
 package ca.ulaval.ima.mp.bluetooth;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -18,7 +11,12 @@ import android.os.Message;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
-import ca.ulaval.ima.mp.activities.GameActivity;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class does all the work for setting up and managing Bluetooth

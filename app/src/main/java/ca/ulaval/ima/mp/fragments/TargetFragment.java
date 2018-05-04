@@ -16,7 +16,6 @@ import java.util.List;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
-import ca.ulaval.ima.mp.adapters.DuoNamesListAdapter;
 import ca.ulaval.ima.mp.adapters.TargetsListAdapter;
 import ca.ulaval.ima.mp.game.Player;
 import ca.ulaval.ima.mp.utils.Utils;

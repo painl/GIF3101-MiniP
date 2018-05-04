@@ -1,14 +1,9 @@
 package ca.ulaval.ima.mp.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;

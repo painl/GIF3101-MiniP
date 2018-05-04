@@ -11,9 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.ulaval.ima.mp.R;
-import ca.ulaval.ima.mp.activities.GameActivity;
-import ca.ulaval.ima.mp.game.Game;
-import ca.ulaval.ima.mp.game.Player;
 
 public class TargetsListAdapter extends ArrayAdapter<String> {
     private LayoutInflater inflater;
