@@ -1,9 +1,7 @@
 package ca.ulaval.ima.mp.fragments;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
-import android.widget.TextView;
 
 import ca.ulaval.ima.mp.R;
 

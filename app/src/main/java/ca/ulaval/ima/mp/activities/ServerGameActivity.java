@@ -2,28 +2,18 @@ package ca.ulaval.ima.mp.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
-import ca.ulaval.ima.mp.bluetooth.messages.PlayerVoteMessage;
 import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
-import ca.ulaval.ima.mp.bluetooth.messages.StepChangeMessage;
-import ca.ulaval.ima.mp.fragments.AbstractFragment;
 import ca.ulaval.ima.mp.fragments.LobbyFragment;
-import ca.ulaval.ima.mp.fragments.RemoteLobbyFragment;
 import ca.ulaval.ima.mp.game.Referee;
-import ca.ulaval.ima.mp.game.roles.Role;
 
 public class ServerGameActivity extends GameActivity {
 
@@ -49,7 +39,7 @@ public class ServerGameActivity extends GameActivity {
         String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
         Toast.makeText(ServerGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
-        updateRemoteList();
+        addRemoteFromLobby(mConnectedDeviceName);
     }
 
     @Override
@@ -58,7 +48,7 @@ public class ServerGameActivity extends GameActivity {
         String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
         Toast.makeText(ServerGameActivity.this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.remove(mConnectedDeviceAddress);
-        updateRemoteList();
+        removeRemoteFromLobby(mConnectedDeviceName);
     }
 
     public void prepareGame(List<String> playerNames) {
@@ -67,15 +57,23 @@ public class ServerGameActivity extends GameActivity {
         mBluetoothService.write(message);
     }
 
-    private void updateRemoteList() {
+    private void addRemoteFromLobby(String remoteName) {
         try {
             LobbyFragment lobbyFrag = (LobbyFragment) getSupportFragmentManager()
                     .findFragmentById(mFragment.getId());
             if (lobbyFrag != null) {
-                lobbyFrag.updateRemoteList(new ArrayList<>(remotes.values()));
+                lobbyFrag.addRemote(remoteName);
             }
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
+        } catch (ClassCastException ignored) {}
+    }
+
+    private void removeRemoteFromLobby(String remoteName) {
+        try {
+            LobbyFragment lobbyFrag = (LobbyFragment) getSupportFragmentManager()
+                    .findFragmentById(mFragment.getId());
+            if (lobbyFrag != null) {
+                lobbyFrag.removeRemote(remoteName);
+            }
+        } catch (ClassCastException ignored) {}
     }
 }

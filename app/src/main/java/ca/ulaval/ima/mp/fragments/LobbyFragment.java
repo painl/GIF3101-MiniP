@@ -39,8 +39,6 @@ public class LobbyFragment extends AbstractFragment {
      */
     public BluetoothService mBluetoothService = null;
 
-    private ListView remotesListView;
-
     private LobbyListAdapter playerListAdapter;
     private RemoteListAdapter remoteListAdapter;
 
@@ -58,6 +56,7 @@ public class LobbyFragment extends AbstractFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListView playerListView = mView.findViewById(R.id.player_list);
+        ListView remotesListView = mView.findViewById(R.id.remotes_list);
         playerListAdapter = new LobbyListAdapter(mContext, new ArrayList<String>());
         remoteListAdapter = new RemoteListAdapter(mContext, new ArrayList<String>());
         playerListAdapter.add("Raf");
@@ -65,7 +64,7 @@ public class LobbyFragment extends AbstractFragment {
         playerListAdapter.add("Antoine");
         playerListAdapter.add("Babou");
         playerListView.setAdapter(playerListAdapter);
-        remotesListView = mView.findViewById(R.id.remotes_list);
+        remotesListView.setAdapter(remoteListAdapter);
         Button addPlayerButton = view.findViewById(R.id.btn_add_player);
         Button remoteButton = view.findViewById(R.id.btn_add_remote);
         Button playBtn = view.findViewById(R.id.btn_launch_game);
@@ -77,20 +76,35 @@ public class LobbyFragment extends AbstractFragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(LobbyFragment.this.getActivity());
                 builder.setTitle("Rentrer le nom du joueur")
                         .setView(dialogView)
-                        .setPositiveButton("Ajouter", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                EditText valueView = dialogView.findViewById(R.id.username);
-                                if (valueView != null) {
-                                    playerListAdapter.add(valueView.getText().toString());
-                                    dialog.dismiss();
-                                }
-                            }
-                        })
+                        .setPositiveButton("Ajouter", null)
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) { dialog.dismiss();
                             }
                         });
-                AlertDialog alert = builder.create();
+                final AlertDialog alert = builder.create();
+                alert.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+
+                        Button button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+                                EditText valueView = dialogView.findViewById(R.id.username);
+                                if (valueView != null) {
+                                    String newName = valueView.getText().toString();
+                                    if (!playerListAdapter.getData().contains(newName)) {
+                                        playerListAdapter.add(newName);
+                                        alert.dismiss();
+                                    } else
+                                        Toast.makeText(getActivity(), R.string.name_already_taken, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
                 alert.show();
                 alert.setCanceledOnTouchOutside(true);
                 final EditText inputField = dialogView.findViewById(R.id.username);
@@ -215,8 +229,11 @@ public class LobbyFragment extends AbstractFragment {
         mBluetoothService.connect(device);
     }
 
-    public void updateRemoteList(ArrayList<String> remoteList) {
-        RemoteListAdapter lba2 = new RemoteListAdapter(mContext, remoteList);
-        remotesListView.setAdapter(lba2);
+    public void addRemote(String remoteName) {
+        remoteListAdapter.add(remoteName);
+    }
+
+    public void removeRemote(String remoteName) {
+        remoteListAdapter.remove(remoteName);
     }
 }

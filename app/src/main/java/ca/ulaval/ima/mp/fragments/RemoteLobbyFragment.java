@@ -2,21 +2,15 @@ package ca.ulaval.ima.mp.fragments;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.activities.GameActivity;
-import ca.ulaval.ima.mp.adapters.LobbyListAdapter;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
-import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
 
 public class RemoteLobbyFragment extends AbstractFragment {
 
