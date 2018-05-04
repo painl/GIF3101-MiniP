@@ -42,4 +42,5 @@
             #5 Les villageois débatent pour débusquer les loups-garous et votent pour une victime de la pendaison au bout de 10 minutes.\n
             #6 La nuit tombe .... Le jeu continue ainsi jusqu\'à ce que un des deux camps soit éliminé.\n
     </string>
+    <string name="four_players_needed">4 joueurs minimum</string>
 </resources>

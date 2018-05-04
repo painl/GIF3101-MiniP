@@ -31,42 +31,15 @@ import ca.ulaval.ima.mp.game.roles.Role;
 
 public class RemoteGameActivity extends GameActivity {
 
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_ENABLE_BT = 3;
-
-    private BluetoothAdapter mBluetoothAdapter;
-
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.ttsMuted = false;
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case MESSAGE_WRITE:
-                        interpretMessage((BluetoothMessage) msg.obj);
-                        break;
-                    case MESSAGE_READ:
-                        interpretMessage((BluetoothMessage) msg.obj);
-                        break;
-                    case MESSAGE_DEVICE_NAME:
-                        String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                        String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
-                        Toast.makeText(RemoteGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                        break;
-                    case MESSAGE_TOAST:
-                        Toast.makeText(RemoteGameActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
         super.onCreate(savedInstanceState);
 
         mBluetoothService = new BluetoothService(this, mHandler);
 
-        // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -78,5 +51,17 @@ public class RemoteGameActivity extends GameActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(mFragment.getId(), RemoteLobbyFragment.newInstance());
         ft.commit();
+    }
+
+    @Override
+    protected void remoteConnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
+        Toast.makeText(this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void remoteDisconnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
+        Toast.makeText(this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
     }
 }

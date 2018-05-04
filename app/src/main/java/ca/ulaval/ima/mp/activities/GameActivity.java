@@ -1,26 +1,25 @@
 package ca.ulaval.ima.mp.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
@@ -38,6 +37,8 @@ import ca.ulaval.ima.mp.game.Game;
 import ca.ulaval.ima.mp.game.Player;
 import ca.ulaval.ima.mp.game.roles.Role;
 
+import static ca.ulaval.ima.mp.bluetooth.BluetoothService.TOAST;
+
 abstract public class GameActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private Menu menu = null;
@@ -45,16 +46,9 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     protected Game mGame;
     protected TextToSpeech tts;
     protected boolean ttsMuted;
-
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
-    public static final int LOST_DEVICE = 6;
-    public static final String TOAST = "toast";
-    public static final String DEVICE_NAME = "device_name";
-    public static final String DEVICE_ADDRESS = "device_address";
+    private BluetoothService.EventType[] eventTypeValues;
+    private boolean paused;
+    private Queue<BluetoothMessage> queuedMessages;
 
     /**
      * Member object for the service
@@ -66,10 +60,36 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
      */
     public Handler mHandler = null;
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        paused = false;
+        eventTypeValues = BluetoothService.EventType.values();
+        queuedMessages = new LinkedList<>();
 
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (eventTypeValues[msg.what]) {
+                    case MESSAGE_WRITE:
+                        interpretMessage((BluetoothMessage) msg.obj);
+                        break;
+                    case MESSAGE_READ:
+                        interpretMessage((BluetoothMessage) msg.obj);
+                        break;
+                    case MESSAGE_DEVICE_NAME:
+                        remoteConnected(msg);
+                        break;
+                    case LOST_DEVICE:
+                        remoteDisconnected(msg);
+                        break;
+                    case MESSAGE_TOAST:
+                        Toast.makeText(GameActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
         mBluetoothService = new BluetoothService(this, mHandler);
         tts = new TextToSpeech(this, this);
     }
@@ -125,7 +145,7 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mBluetoothService.getState() != BluetoothService.STATE_NONE) {
+        if (mBluetoothService.getState() != BluetoothService.StateType.STATE_NONE) {
             mBluetoothService.stop();
         }
         if (tts != null) {
@@ -141,6 +161,22 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     public void startGame(LinkedHashMap<String, Role.Type> roleMap) {
         mGame = new Game(this, roleMap);
         startRolesStep(mGame.getPlayers());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        paused = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        paused = false;
+        while (!queuedMessages.isEmpty())
+            interpretMessage(queuedMessages.poll());
     }
 
     public boolean fragmentTransit(Fragment transit, boolean toBackStack) {
@@ -226,25 +262,32 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     }
 
     protected void interpretMessage(BluetoothMessage message) {
-        Log.d("MESSAGE", "TYPE : " + message.type);
-        switch (message.type) {
-            case ROLE_DISPATCH:
-                RoleDispatchMessage dispatchMessage = (RoleDispatchMessage) message.content;
-                Log.d("ROLE DISPATCH", "ROLES : " + dispatchMessage.roles);
-                startGame(dispatchMessage.roles);
-                break;
-            case STEP_CHANGE:
-                StepChangeMessage stepChangeMessage = (StepChangeMessage) message.content;
-                Log.d("STEP CHANGE", "STEP : " + stepChangeMessage.stepId);
-                mGame.play(stepChangeMessage.stepId);
-                break;
-            case PLAYER_VOTE:
-                PlayerVoteMessage voteMessage = (PlayerVoteMessage) message.content;
-                Log.d("PLAYER VOTE", "FROM : " + voteMessage.playerId + " TO : " + voteMessage.targetId);
-                mGame.playerVote(voteMessage.playerId, voteMessage.targetId);
-                ((AbstractFragment) getSupportFragmentManager()
-                        .findFragmentById(mFragment.getId())).onBluetoothResponse();
-                break;
+        if (paused) queuedMessages.add(message);
+        else {
+            Log.d("MESSAGE", "TYPE : " + message.type);
+            switch (message.type) {
+                case ROLE_DISPATCH:
+                    RoleDispatchMessage dispatchMessage = (RoleDispatchMessage) message.content;
+                    Log.d("ROLE DISPATCH", "ROLES : " + dispatchMessage.roles);
+                    startGame(dispatchMessage.roles);
+                    break;
+                case STEP_CHANGE:
+                    StepChangeMessage stepChangeMessage = (StepChangeMessage) message.content;
+                    Log.d("STEP CHANGE", "STEP : " + stepChangeMessage.stepId);
+                    mGame.play(stepChangeMessage.stepId);
+                    break;
+                case PLAYER_VOTE:
+                    PlayerVoteMessage voteMessage = (PlayerVoteMessage) message.content;
+                    Log.d("PLAYER VOTE", "FROM : " + voteMessage.playerId + " TO : " + voteMessage.targetId);
+                    mGame.playerVote(voteMessage.playerId, voteMessage.targetId);
+                    ((AbstractFragment) getSupportFragmentManager()
+                            .findFragmentById(mFragment.getId())).onBluetoothResponse();
+                    break;
+            }
         }
     }
+
+    protected abstract void remoteConnected(Message msg);
+
+    protected abstract void remoteDisconnected(Message msg);
 }

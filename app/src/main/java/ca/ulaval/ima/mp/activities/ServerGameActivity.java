@@ -33,29 +33,6 @@ public class ServerGameActivity extends GameActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.ttsMuted = true;
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case MESSAGE_WRITE:
-                        interpretMessage((BluetoothMessage) msg.obj);
-                        break;
-                    case MESSAGE_READ:
-                        interpretMessage((BluetoothMessage) msg.obj);
-                        break;
-                    case MESSAGE_DEVICE_NAME:
-                        remoteConnected(msg);
-                        break;
-                    case LOST_DEVICE:
-                        remoteDisconnected(msg);
-                        break;
-                    case MESSAGE_TOAST:
-                        Toast.makeText(ServerGameActivity.this, msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
-
         super.onCreate(savedInstanceState);
 
         remotes = new HashMap<>();
@@ -66,20 +43,22 @@ public class ServerGameActivity extends GameActivity {
         ft.commit();
     }
 
-    private void remoteConnected(Message msg) {
-        String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-        String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
+    @Override
+    protected void remoteConnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
+        String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
         Toast.makeText(ServerGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
-        ServerGameActivity.this.updateRemoteList();
+        updateRemoteList();
     }
 
-    private void remoteDisconnected(Message msg) {
-        String mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-        String mConnectedDeviceAddress = msg.getData().getString(DEVICE_ADDRESS);
+    @Override
+    protected void remoteDisconnected(Message msg) {
+        String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
+        String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
         Toast.makeText(ServerGameActivity.this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.remove(mConnectedDeviceAddress);
-        ServerGameActivity.this.updateRemoteList();
+        updateRemoteList();
     }
 
     public void prepareGame(List<String> playerNames) {

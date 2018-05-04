@@ -76,7 +76,7 @@ public class RemoteLobbyFragment extends AbstractFragment {
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mBluetoothService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mBluetoothService.getState() == BluetoothService.STATE_NONE) {
+            if (mBluetoothService.getState() == BluetoothService.StateType.STATE_NONE) {
                 // Start the Bluetooth chat services
                 setupClient();
             }

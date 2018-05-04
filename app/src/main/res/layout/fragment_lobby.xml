@@ -4,58 +4,59 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:id="@+id/fragment_root">
 
-    <ListView
-        android:id="@+id/player_list"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="7dp"
-        android:layout_width="200dp"
-        android:layout_height="137dp"
-        android:padding="2px"
-        android:background="@drawable/stroke_black">
-    </ListView>
+    <LinearLayout
+        android:id="@+id/fragment_root"
+        android:layout_width="match_parent"
+        android:layout_height="509dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="2dp">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_add_player"
-        android:layout_width="172dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        style="@style/BlueButton"
-        android:text="Ajouter Joueur" />
+        <ListView
+            android:id="@+id/player_list"
+            android:layout_width="275dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/stroke_black"
+            android:padding="2px"></ListView>
 
-    <ListView
-        android:id="@+id/remotes_list"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="7dp"
-        android:layout_width="200dp"
-        android:layout_height="137dp"
-        android:padding="2px"
-        android:background="@drawable/stroke_black">
-    </ListView>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_add_player"
+            style="@style/BlueButton"
+            android:layout_width="172dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:text="Ajouter Joueur" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_add_remote"
-        android:layout_width="172dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        style="@style/BlueButton"
-        android:text="Ajouter Manette" />
+        <ListView
+            android:id="@+id/remotes_list"
+            android:layout_width="275dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/stroke_black"
+            android:padding="2px"></ListView>
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_launch_game"
-        style="@style/BlueButton"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp"
-        android:text="Lancer la partie" />
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_add_remote"
+            style="@style/BlueButton"
+            android:layout_width="172dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:text="Ajouter Manette" />
 
-</LinearLayout>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_launch_game"
+            style="@style/BlueButton"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Lancer la partie" />
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

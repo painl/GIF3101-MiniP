@@ -43,15 +43,30 @@ public class BluetoothService {
     private AcceptThread mAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
-    private int mState;
+    private StateType mState;
 
     private ArrayMap<String, ConnectedThread> mConnThreads;
 
     // Constants that indicate the current connection state
-    public static final int STATE_NONE = 0; // we're doing nothing
-    public static final int STATE_LISTEN = 1; // now listening for incoming
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing
-    public static final int STATE_CONNECTED = 3; // now connected to a remote
+    public enum StateType {
+        STATE_NONE,  // we're doing nothing
+        STATE_LISTEN, // now listening for incoming
+        STATE_CONNECTING, // now initiating an outgoing
+        STATE_CONNECTED // now connected to a remote
+    }
+
+    public enum EventType {
+        MESSAGE_STATE_CHANGE,
+        MESSAGE_READ,
+        MESSAGE_WRITE,
+        MESSAGE_DEVICE_NAME,
+        MESSAGE_TOAST,
+        LOST_DEVICE
+    }
+
+    public static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_ADDRESS = "device_address";
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -61,16 +76,16 @@ public class BluetoothService {
      */
     public BluetoothService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-        mState = STATE_NONE;
+        mState = StateType.STATE_NONE;
         mHandler = handler;
         mConnThreads = new ArrayMap<>();
     }
 
-    public static UUID getMY_UUID() {
+    private static UUID getMY_UUID() {
         return MY_UUID;
     }
 
-    public static void setMY_UUID(UUID mY_UUID) {
+    private static void setMY_UUID(UUID mY_UUID) {
         MY_UUID = mY_UUID;
     }
 
@@ -80,19 +95,19 @@ public class BluetoothService {
      * @param state
      *            An integer defining the current connection state
      */
-    private synchronized void setState(int state) {
+    private synchronized void setState(StateType state) {
         if (D)
             Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(GameActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(EventType.MESSAGE_STATE_CHANGE.ordinal(), state.ordinal(), -1).sendToTarget();
     }
 
     /**
      * Return the current connection state.
      */
-    public synchronized int getState() {
+    public synchronized StateType getState() {
         return mState;
     }
 
@@ -121,7 +136,7 @@ public class BluetoothService {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
         }
-        setState(STATE_LISTEN);
+        setState(StateType.STATE_LISTEN);
     }
 
     /**
@@ -136,7 +151,7 @@ public class BluetoothService {
                 Log.d(TAG, "connect to: " + device);
 
             // Cancel any thread attempting to make a connection
-            if (mState == STATE_CONNECTING) {
+            if (mState == StateType.STATE_CONNECTING) {
                 if (mConnectThread != null) {
                     mConnectThread.cancel();
                     mConnectThread = null;
@@ -153,14 +168,14 @@ public class BluetoothService {
                         + ("00001101-0000-1000-8000" + device.getAddress()
                         .replace(":", "")));
                 mConnectThread.start();
-                setState(STATE_CONNECTING);
+                setState(StateType.STATE_CONNECTING);
             } catch (Exception e) {
             }
         } else {
             Message msg = mHandler
-                    .obtainMessage(GameActivity.MESSAGE_TOAST);
+                    .obtainMessage(EventType.MESSAGE_TOAST.ordinal());
             Bundle bundle = new Bundle();
-            bundle.putString(GameActivity.TOAST,
+            bundle.putString(TOAST,
                     "This device " + device.getName() + " Already Connected");
             msg.setData(bundle);
             mHandler.sendMessage(msg);
@@ -186,13 +201,13 @@ public class BluetoothService {
         mConnThreads.put(device.getAddress(), mConnectedThread);
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(GameActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(EventType.MESSAGE_DEVICE_NAME.ordinal());
         Bundle bundle = new Bundle();
-        bundle.putString(GameActivity.DEVICE_NAME, device.getName());
-        bundle.putString(GameActivity.DEVICE_ADDRESS, device.getAddress());
+        bundle.putString(DEVICE_NAME, device.getName());
+        bundle.putString(DEVICE_ADDRESS, device.getAddress());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
-        setState(STATE_CONNECTED);
+        setState(StateType.STATE_CONNECTED);
     }
 
     /**
@@ -220,7 +235,7 @@ public class BluetoothService {
 
         mConnThreads.clear();
 
-        setState(STATE_NONE);
+        setState(StateType.STATE_NONE);
     }
 
     /**
@@ -231,7 +246,7 @@ public class BluetoothService {
      * @see ConnectedThread#write(BluetoothMessage)
      */
     public void write(BluetoothMessage outMessage) {
-        mHandler.obtainMessage(GameActivity.MESSAGE_WRITE, -1, -1, outMessage).sendToTarget();
+        mHandler.obtainMessage(EventType.MESSAGE_WRITE.ordinal(), -1, -1, outMessage).sendToTarget();
 
         byte out[] = outMessage.serialize();
 
@@ -243,7 +258,7 @@ public class BluetoothService {
                 ConnectedThread r;
                 // Synchronize a copy of the ConnectedThread
                 synchronized (this) {
-                    if (mState != STATE_CONNECTED)
+                    if (mState != StateType.STATE_CONNECTED)
                         return;
                     r = pair.getValue();
                 }
@@ -259,11 +274,11 @@ public class BluetoothService {
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
     private void connectionFailed() {
-        setState(STATE_LISTEN);
+        setState(StateType.STATE_LISTEN);
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(GameActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(EventType.MESSAGE_TOAST.ordinal());
         Bundle bundle = new Bundle();
-        bundle.putString(GameActivity.TOAST, "Unable to connect device");
+        bundle.putString(TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -276,10 +291,10 @@ public class BluetoothService {
         mConnThreads.remove(device.getAddress());
 
         // Send the name of the disconnected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(GameActivity.LOST_DEVICE);
+        Message msg = mHandler.obtainMessage(EventType.LOST_DEVICE.ordinal());
         Bundle bundle = new Bundle();
-        bundle.putString(GameActivity.DEVICE_NAME, device.getName());
-        bundle.putString(GameActivity.DEVICE_ADDRESS, device.getAddress());
+        bundle.putString(DEVICE_NAME, device.getName());
+        bundle.putString(DEVICE_ADDRESS, device.getAddress());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -321,7 +336,7 @@ public class BluetoothService {
             BluetoothSocket socket;
             Log.i(TAG, "mState in acceptThread==" + mState);
             // Listen to the server socket if we're not connected
-            while (mState != STATE_CONNECTED) {
+            while (mState != StateType.STATE_CONNECTED) {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -377,12 +392,10 @@ public class BluetoothService {
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
-        private UUID tempUuid;
 
         ConnectThread(BluetoothDevice device, UUID uuidToTry) {
             mmDevice = device;
             BluetoothSocket tmp = null;
-            tempUuid = uuidToTry;
             // Get a BluetoothSocket for a connection with the given BluetoothDevice
             try {
                 tmp = device.createRfcommSocketToServiceRecord(uuidToTry);
@@ -482,7 +495,7 @@ public class BluetoothService {
                     // Send the obtained message to the UI Activity
                     if (bytes > 0) {
                         mHandler.obtainMessage(
-                                GameActivity.MESSAGE_READ,
+                                EventType.MESSAGE_READ.ordinal(),
                                 bytes,
                                 0,
                                 BluetoothMessage.unserialize(content, bytes)).sendToTarget();
