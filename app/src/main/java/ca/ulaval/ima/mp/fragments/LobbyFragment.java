@@ -216,7 +216,7 @@ public class LobbyFragment extends AbstractFragment {
     }
 
     public void updateRemoteList(ArrayList<String> remoteList) {
-        LobbyListAdapter lba2 = new LobbyListAdapter(mContext, remoteList);
+        RemoteListAdapter lba2 = new RemoteListAdapter(mContext, remoteList);
         remotesListView.setAdapter(lba2);
     }
 }
