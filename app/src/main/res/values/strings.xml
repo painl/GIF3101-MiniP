@@ -18,6 +18,8 @@
     <string name="title_activity_device_list">DeviceListActivity</string>
     <string name="bt_not_enabled_leaving">Bluetooth not enabled</string>
     <string name="add_remote">Ajouter manette</string>
+    <string name="mute">Couper la voix artificielle</string>
+    <string name="unmute">Lancer la voix artificielle</string>
 
     <string name="rules">
         ★ BASES DU JEU ET DE L\'APPLICATION\n\n
