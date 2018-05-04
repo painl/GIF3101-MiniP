@@ -7,8 +7,7 @@ import ca.ulaval.ima.mp.R;
 
 public class RulesFragment extends AbstractFragment {
 
-    public static RulesFragment newInstance()
-    {
+    public static RulesFragment newInstance() {
         RulesFragment rulesFragment = new RulesFragment();
         rulesFragment.setLayout(R.layout.fragment_rules);
         return rulesFragment;

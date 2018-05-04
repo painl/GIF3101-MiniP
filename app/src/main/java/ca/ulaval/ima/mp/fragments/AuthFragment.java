@@ -35,13 +35,7 @@ public class AuthFragment extends AbstractFragment {
     private Button mBtn2;
     private AlertDialog alert;
 
-    public enum AUTH {
-        REGISTER,
-        LOGIN
-    }
-
-    public static AuthFragment newInstance(AUTH auth)
-    {
+    public static AuthFragment newInstance(AUTH auth) {
         AuthFragment authFragment = new AuthFragment();
         authFragment.mAuth = auth;
         authFragment.setLayout(R.layout.fragment_auth);
@@ -61,8 +55,7 @@ public class AuthFragment extends AbstractFragment {
         initView();
     }
 
-    private void alertLoaded(final int success, String message)
-    {
+    private void alertLoaded(final int success, String message) {
         TextView text = alert.findViewById(R.id.text);
         alert.findViewById(R.id.progress).setVisibility(View.GONE);
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
@@ -75,13 +68,12 @@ public class AuthFragment extends AbstractFragment {
             public void onClick(View view) {
                 alert.dismiss();
                 if (success == 1)
-                    ((MainActivity)mContext).onBackPressed();
+                    ((MainActivity) mContext).onBackPressed();
             }
         });
     }
 
-    private void requestDialog()
-    {
+    private void requestDialog() {
         final LayoutInflater inflater = LayoutInflater.from(mContext);
         final View dialogView = inflater.inflate(R.layout.dialog_request_load, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -97,19 +89,14 @@ public class AuthFragment extends AbstractFragment {
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 
-    private void validate(String user, String pass)
-    {
-        if (user.length() < 4)
-        {
+    private void validate(String user, String pass) {
+        if (user.length() < 4) {
             mError.setText("Le nom d'utilisateur doit faire au moins 4 caractères.");
             mError.setVisibility(View.VISIBLE);
-        }
-        else if (pass.length() < 4)
-        {
+        } else if (pass.length() < 4) {
             mError.setText("Le mot de passe doit faire au moins 4 caractères.");
             mError.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             mError.setVisibility(View.GONE);
             requestDialog();
             try {
@@ -120,24 +107,17 @@ public class AuthFragment extends AbstractFragment {
         }
     }
 
-    private void validate(String user, String pass, String passConfirm)
-    {
-        if (user.length() < 4)
-        {
+    private void validate(String user, String pass, String passConfirm) {
+        if (user.length() < 4) {
             mError.setText("Le nom d'utilisateur doit faire au moins 4 caractères.");
             mError.setVisibility(View.VISIBLE);
-        }
-        else if (pass.length() < 4)
-        {
+        } else if (pass.length() < 4) {
             mError.setText("Le mot de passe doit faire au moins 4 caractères.");
             mError.setVisibility(View.VISIBLE);
-        }
-        else if (!pass.equals(passConfirm))
-        {
+        } else if (!pass.equals(passConfirm)) {
             mError.setText("Le mot de passe ne correspond pas.");
             mError.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             mError.setVisibility(View.GONE);
             requestDialog();
             try {
@@ -148,11 +128,9 @@ public class AuthFragment extends AbstractFragment {
         }
     }
 
-    private void initView()
-    {
+    private void initView() {
         mError.setVisibility(View.GONE);
-        if (mAuth == AUTH.LOGIN)
-        {
+        if (mAuth == AUTH.LOGIN) {
             mPassConfirm.setVisibility(View.GONE);
             mNeed.setVisibility(View.VISIBLE);
             mBtn1.setOnClickListener(new View.OnClickListener() {
@@ -164,12 +142,10 @@ public class AuthFragment extends AbstractFragment {
             mBtn2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(AUTH.REGISTER), true);
+                    ((MainActivity) mContext).fragmentTransit(AuthFragment.newInstance(AUTH.REGISTER), true);
                 }
             });
-        }
-        else
-        {
+        } else {
             mPassConfirm.setVisibility(View.VISIBLE);
             mNeed.setVisibility(View.GONE);
             mBtn1.setText("S'inscrire");
@@ -183,7 +159,7 @@ public class AuthFragment extends AbstractFragment {
             mBtn2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(AUTH.LOGIN), false);
+                    ((MainActivity) mContext).fragmentTransit(AuthFragment.newInstance(AUTH.LOGIN), false);
                 }
             });
         }
@@ -226,5 +202,10 @@ public class AuthFragment extends AbstractFragment {
                 alertLoaded(0, "Erreur d'inscription");
             }
         });
+    }
+
+    public enum AUTH {
+        REGISTER,
+        LOGIN
     }
 }

@@ -7,8 +7,7 @@ import ca.ulaval.ima.mp.R;
 
 public class StatsFragment extends AbstractFragment {
 
-    public static StatsFragment newInstance()
-    {
+    public static StatsFragment newInstance() {
         StatsFragment statsFragment = new StatsFragment();
         statsFragment.setLayout(R.layout.fragment_stats);
         return statsFragment;

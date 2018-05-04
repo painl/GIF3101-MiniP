@@ -38,7 +38,7 @@ public class RoleDispatchMessage implements IGameMessage {
 
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOut);
-            outputStream.writeObject( roles );
+            outputStream.writeObject(roles);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class RoleDispatchMessage implements IGameMessage {
         return byteOut.toByteArray();
     }
 
-    public BluetoothMessage.MessageType getType(){
+    public BluetoothMessage.MessageType getType() {
         return BluetoothMessage.MessageType.ROLE_DISPATCH;
     }
 }

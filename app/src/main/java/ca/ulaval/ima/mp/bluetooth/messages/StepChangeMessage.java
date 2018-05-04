@@ -26,7 +26,7 @@ public class StepChangeMessage implements IGameMessage {
         return dbuf.array();
     }
 
-    public BluetoothMessage.MessageType getType(){
+    public BluetoothMessage.MessageType getType() {
         return BluetoothMessage.MessageType.STEP_CHANGE;
     }
 }

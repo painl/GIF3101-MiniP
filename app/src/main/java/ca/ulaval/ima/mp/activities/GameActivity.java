@@ -41,24 +41,22 @@ import static ca.ulaval.ima.mp.bluetooth.BluetoothService.TOAST;
 
 abstract public class GameActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-    private Menu menu = null;
-    protected FrameLayout mFragment;
-    protected Game mGame;
-    protected TextToSpeech tts;
-    protected boolean ttsMuted;
-    private BluetoothService.EventType[] eventTypeValues;
-    private boolean paused;
-    private Queue<BluetoothMessage> queuedMessages;
-
     /**
      * Member object for the service
      */
     public BluetoothService mBluetoothService = null;
-
     /**
      * Member object for the handler
      */
     public Handler mHandler = null;
+    protected FrameLayout mFragment;
+    protected Game mGame;
+    protected TextToSpeech tts;
+    protected boolean ttsMuted;
+    private Menu menu = null;
+    private BluetoothService.EventType[] eventTypeValues;
+    private boolean paused;
+    private Queue<BluetoothMessage> queuedMessages;
 
     @SuppressLint("HandlerLeak")
     @Override

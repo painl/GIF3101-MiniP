@@ -52,10 +52,11 @@ public class WebService {
                 URL, null, response.onSuccess(), response.onError()) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String,String> header = new HashMap<>();
-            header.put("Authorization","Bearer " + authToken);
-            return header;
-        }};
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer " + authToken);
+                return header;
+            }
+        };
         this.getRequestQueue().add(jsonRequest);
         return jsonRequest.getUrl();
     }
@@ -68,15 +69,14 @@ public class WebService {
         return jsonRequest.getUrl();
     }
 
-    public String POSTRequestWithAuth(String url, WSResponse<JSONObject> response, JSONObject params, final String authToken)
-    {
+    public String POSTRequestWithAuth(String url, WSResponse<JSONObject> response, JSONObject params, final String authToken) {
         String URL = API_BASE_URL + url;
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST,
-                URL, params, response.onSuccess(), response.onError()){
+                URL, params, response.onSuccess(), response.onError()) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> header = new HashMap<>();
-                header.put("Authorization","Bearer " + authToken);
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer " + authToken);
                 return header;
             }
         };

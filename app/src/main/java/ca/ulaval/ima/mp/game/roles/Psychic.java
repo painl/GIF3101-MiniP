@@ -10,7 +10,7 @@ public class Psychic extends Role {
     private List<Player> seen;
 
     public Psychic() {
-        super("Voyante","psychic.png", Side.VILLAGER, false, Type.PSYCHIC);
+        super("Voyante", "psychic.png", Side.VILLAGER, false, Type.PSYCHIC);
         this.seen = new ArrayList<>();
     }
 

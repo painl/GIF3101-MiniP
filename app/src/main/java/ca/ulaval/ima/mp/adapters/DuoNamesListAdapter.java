@@ -15,10 +15,6 @@ import ca.ulaval.ima.mp.game.Player;
 
 public class DuoNamesListAdapter extends ArrayAdapter<Player> {
     private LayoutInflater inflater;
-    private static class ViewHolder {
-        ImageView check;
-        TextView name;
-    }
 
     public DuoNamesListAdapter(Context context, List<Player> data) {
         super(context, -1, data);
@@ -43,5 +39,10 @@ public class DuoNamesListAdapter extends ArrayAdapter<Player> {
         if (p != null)
             viewHolder.check.setImageDrawable(getContext().getResources().getDrawable(R.drawable.toggle_checked));
         return convertView;
+    }
+
+    private static class ViewHolder {
+        ImageView check;
+        TextView name;
     }
 }

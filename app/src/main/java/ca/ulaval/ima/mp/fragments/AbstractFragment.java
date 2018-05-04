@@ -14,8 +14,7 @@ public abstract class AbstractFragment extends Fragment {
     protected Context mContext;
     private int mLayout;
 
-    protected void setLayout(int layout)
-    {
+    protected void setLayout(int layout) {
         this.mLayout = layout;
     }
 
@@ -43,5 +42,8 @@ public abstract class AbstractFragment extends Fragment {
         mContext = getContext();
     }
 
-    public void onBluetoothResponse() {};
+    public void onBluetoothResponse() {
+    }
+
+    ;
 }

@@ -25,16 +25,16 @@ import java.util.UUID;
  * performing data transmissions when connected.
  */
 public class BluetoothService {
+    public static final String TOAST = "toast";
+    public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_ADDRESS = "device_address";
     // Debugging
     private static final String TAG = "BluetoothService iBT";
     private static final boolean D = true;
-
     // Name for the SDP record when creating server socket
     private static final String NAME = "i BT";
-
     // Unique UUID for this application
     private static UUID MY_UUID;
-
     // Member fields
     private final BluetoothAdapter mAdapter;
     private final Handler mHandler;
@@ -42,35 +42,12 @@ public class BluetoothService {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private StateType mState;
-
     private ArrayMap<String, ConnectedThread> mConnThreads;
-
-    // Constants that indicate the current connection state
-    public enum StateType {
-        STATE_NONE,  // we're doing nothing
-        STATE_LISTEN, // now listening for incoming
-        STATE_CONNECTING, // now initiating an outgoing
-        STATE_CONNECTED // now connected to a remote
-    }
-
-    public enum EventType {
-        MESSAGE_STATE_CHANGE,
-        MESSAGE_READ,
-        MESSAGE_WRITE,
-        MESSAGE_DEVICE_NAME,
-        MESSAGE_TOAST,
-        LOST_DEVICE
-    }
-
-    public static final String TOAST = "toast";
-    public static final String DEVICE_NAME = "device_name";
-    public static final String DEVICE_ADDRESS = "device_address";
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
      *
-     * @param handler
-     *            A Handler to send messages back to the UI Activity
+     * @param handler A Handler to send messages back to the UI Activity
      */
     public BluetoothService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -88,10 +65,16 @@ public class BluetoothService {
     }
 
     /**
+     * Return the current connection state.
+     */
+    public synchronized StateType getState() {
+        return mState;
+    }
+
+    /**
      * Set the current state of the chat connection
      *
-     * @param state
-     *            An integer defining the current connection state
+     * @param state An integer defining the current connection state
      */
     private synchronized void setState(StateType state) {
         if (D)
@@ -100,13 +83,6 @@ public class BluetoothService {
 
         // Give the new state to the Handler so the UI Activity can update
         mHandler.obtainMessage(EventType.MESSAGE_STATE_CHANGE.ordinal(), state.ordinal(), -1).sendToTarget();
-    }
-
-    /**
-     * Return the current connection state.
-     */
-    public synchronized StateType getState() {
-        return mState;
     }
 
     /**
@@ -140,8 +116,7 @@ public class BluetoothService {
     /**
      * Start the ConnectThread to initiate a connection to a remote device.
      *
-     * @param device
-     *            The BluetoothDevice to connect
+     * @param device The BluetoothDevice to connect
      */
     public synchronized void connect(BluetoothDevice device) {
         if (mConnThreads.get(device.getAddress()) == null) {
@@ -183,10 +158,8 @@ public class BluetoothService {
     /**
      * Start the ConnectedThread to begin managing a Bluetooth connection
      *
-     * @param socket
-     *            The BluetoothSocket on which the connection was made
-     * @param device
-     *            The BluetoothDevice that has been connected
+     * @param socket The BluetoothSocket on which the connection was made
+     * @param device The BluetoothDevice that has been connected
      */
     private synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         if (D)
@@ -239,8 +212,7 @@ public class BluetoothService {
     /**
      * Write to all ConnectedThreads in an unsynchronized manner
      *
-     * @param outMessage
-     *            The message to write
+     * @param outMessage The message to write
      * @see ConnectedThread#write(BluetoothMessage)
      */
     public void write(BluetoothMessage outMessage) {
@@ -295,6 +267,23 @@ public class BluetoothService {
         bundle.putString(DEVICE_ADDRESS, device.getAddress());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+    }
+
+    // Constants that indicate the current connection state
+    public enum StateType {
+        STATE_NONE,  // we're doing nothing
+        STATE_LISTEN, // now listening for incoming
+        STATE_CONNECTING, // now initiating an outgoing
+        STATE_CONNECTED // now connected to a remote
+    }
+
+    public enum EventType {
+        MESSAGE_STATE_CHANGE,
+        MESSAGE_READ,
+        MESSAGE_WRITE,
+        MESSAGE_DEVICE_NAME,
+        MESSAGE_TOAST,
+        LOST_DEVICE
     }
 
     /**
@@ -510,8 +499,7 @@ public class BluetoothService {
         /**
          * Write to the connected OutStream.
          *
-         * @param buffer
-         *            The bytes to write
+         * @param buffer The bytes to write
          */
         public void write(byte[] buffer) {
             try {

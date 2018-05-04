@@ -12,13 +12,8 @@ import ca.ulaval.ima.mp.game.roles.Wolf;
 
 public class Game {
 
-    public enum State {RUNNING, WAITING}
-
-    public enum Time {DAY, NIGHT}
-
-    private GameActivity mContext;
-
     private final Referee referee;
+    private GameActivity mContext;
     private List<Player> players;
     private int turn;
 
@@ -32,7 +27,7 @@ public class Game {
 
     private void assignRoles(LinkedHashMap<String, Role.Type> roleMap) {
         int id = 0;
-        for (Map.Entry<String, Role.Type> entry: roleMap.entrySet()) {
+        for (Map.Entry<String, Role.Type> entry : roleMap.entrySet()) {
             Role newRole;
             switch (entry.getValue()) {
                 case WEREWOLF:
@@ -46,8 +41,7 @@ public class Game {
         }
     }
 
-    public void play(int index)
-    {
+    public void play(int index) {
         if (this.referee.isGameProceeding()) {
             if (index == 1)
                 debateTurn();
@@ -96,8 +90,7 @@ public class Game {
         mContext.startDeathStep(this.referee.getDeadPlayers(), Time.DAY);
     }
 
-    public List<Player> getVotes()
-    {
+    public List<Player> getVotes() {
         List<Player> votes = new ArrayList<>();
         for (Player p : players)
             if (p.getVote() != null)
@@ -112,8 +105,7 @@ public class Game {
         mContext.startWolvesStep(wolves, meals);
     }
 
-    private void initVotes()
-    {
+    private void initVotes() {
         for (Player player : getPlayers())
             player.setVote(null);
     }
@@ -126,7 +118,6 @@ public class Game {
 
     /**
      * Has to be called after all wolves have voted.
-     *
      */
     private void werewolfPlayed() {
         Player chosen = this.referee.getChosenPlayer(getVotes());
@@ -134,6 +125,31 @@ public class Game {
             chosen.setDeathMark(true);
             chosen.setMurderer(Role.Type.WEREWOLF);
         }
+    }
+
+    /**
+     * Has to be called after the psychic ended her turn.
+     */
+    /*public void psychicPlayed(int targetId) {
+        Player target = this.getPlayerById(targetId);
+        Psychic psychic = (Psychic) this.getPlayerByRole(Role.Type.PSYCHIC).getRole();
+        psychic.addSeen(target);
+        // this.revealRole(target);
+    }*/
+    private Player getPlayerById(int id) {
+        for (Player player : this.players) {
+            if (player.getId() == id)
+                return player;
+        }
+        return null;
+    }
+
+    private Player getPlayerByRole(Role.Type type) {
+        for (Player player : this.players) {
+            if (player.getRole().getType() == type)
+                return player;
+        }
+        return null;
     }
 
     /*private void witchTurn() {
@@ -197,30 +213,9 @@ public class Game {
         List<Player> playersToSee = this.referee.getPlayersToSee(((Psychic) psychic.getRole()).getSeen());
     }*/
 
-    /**
-     * Has to be called after the psychic ended her turn.
-     *
-     */
-    /*public void psychicPlayed(int targetId) {
-        Player target = this.getPlayerById(targetId);
-        Psychic psychic = (Psychic) this.getPlayerByRole(Role.Type.PSYCHIC).getRole();
-        psychic.addSeen(target);
-        // this.revealRole(target);
-    }*/
-
-    private Player getPlayerById(int id) {
-        for (Player player : this.players) {
-            if (player.getId() == id)
-                return player;
-        }
-        return null;
+    public enum State {
+        RUNNING, WAITING
     }
 
-    private Player getPlayerByRole(Role.Type type) {
-        for (Player player : this.players) {
-            if (player.getRole().getType() == type)
-                return player;
-        }
-        return null;
-    }
+    public enum Time {DAY, NIGHT}
 }

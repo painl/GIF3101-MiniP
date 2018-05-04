@@ -20,20 +20,12 @@ import ca.ulaval.ima.mp.utils.Utils;
 
 public class GameDuoFragment extends AbstractFragment {
 
-    public enum CHOICE_MODE {
-        ROLES,
-        VOTES,
-        WOLVES,
-        DEBATE
-    }
-
     private CHOICE_MODE mChoice;
     private List<Player> mPlayers;
     private List<Player> mTargets;
     private ListView mListView;
 
-    public static GameDuoFragment newInstance(CHOICE_MODE choice, List<Player> players)
-    {
+    public static GameDuoFragment newInstance(CHOICE_MODE choice, List<Player> players) {
         GameDuoFragment fragment = new GameDuoFragment();
         fragment.mChoice = choice;
         fragment.mPlayers = players;
@@ -41,14 +33,12 @@ public class GameDuoFragment extends AbstractFragment {
         return fragment;
     }
 
-    public void setTargets(List<Player> targets)
-    {
-        this.mTargets = targets;
+    public List<Player> getTargets() {
+        return mTargets;
     }
 
-    public List<Player> getTargets()
-    {
-        return mTargets;
+    public void setTargets(List<Player> targets) {
+        this.mTargets = targets;
     }
 
     @Override
@@ -73,8 +63,8 @@ public class GameDuoFragment extends AbstractFragment {
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        ((GameActivity)mContext).startRevealStep(mPlayers.get(i));
-                        ((GameActivity)mContext).playerVote(mPlayers.get(i).getId(), mPlayers.get(i).getId());
+                        ((GameActivity) mContext).startRevealStep(mPlayers.get(i));
+                        ((GameActivity) mContext).playerVote(mPlayers.get(i).getId(), mPlayers.get(i).getId());
                     }
                 });
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +73,7 @@ public class GameDuoFragment extends AbstractFragment {
                         ((GameActivity) mContext).prepareStep(1);
                     }
                 });
-                break ;
+                break;
             case VOTES:
                 Picasso.get().load(R.drawable.villager).into(icone);
                 btn.setText("Continuer");
@@ -91,16 +81,16 @@ public class GameDuoFragment extends AbstractFragment {
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        ((GameActivity)mContext).startTargetStep(mPlayers.get(i), mTargets, TargetFragment.TARGET_MODE.VOTE);
+                        ((GameActivity) mContext).startTargetStep(mPlayers.get(i), mTargets, TargetFragment.TARGET_MODE.VOTE);
                     }
                 });
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((GameActivity)mContext).prepareStep(5);
+                        ((GameActivity) mContext).prepareStep(5);
                     }
                 });
-                break ;
+                break;
             case WOLVES:
                 Picasso.get().load(R.drawable.wolf).into(icone);
                 btn.setText("Continuer");
@@ -108,7 +98,7 @@ public class GameDuoFragment extends AbstractFragment {
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        ((GameActivity)mContext).startTargetStep(mPlayers.get(i), mTargets, TargetFragment.TARGET_MODE.WOLF);
+                        ((GameActivity) mContext).startTargetStep(mPlayers.get(i), mTargets, TargetFragment.TARGET_MODE.WOLF);
                     }
                 });
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -117,14 +107,14 @@ public class GameDuoFragment extends AbstractFragment {
                         ((GameActivity) mContext).prepareStep(6);
                     }
                 });
-                break ;
+                break;
             case DEBATE:
                 Picasso.get().load(R.drawable.villager).into(icone);
                 btn.setText("Continuer");
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((GameActivity)mContext).prepareStep(2);
+                        ((GameActivity) mContext).prepareStep(2);
                     }
                 });
                 text.setText("Débat...");
@@ -145,5 +135,12 @@ public class GameDuoFragment extends AbstractFragment {
             mListView.setAdapter(dla);
             Utils.justifyListViewHeightBasedOnChildren(mListView);
         }
+    }
+
+    public enum CHOICE_MODE {
+        ROLES,
+        VOTES,
+        WOLVES,
+        DEBATE
     }
 }

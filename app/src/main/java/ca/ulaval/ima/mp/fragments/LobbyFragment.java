@@ -29,22 +29,19 @@ import ca.ulaval.ima.mp.bluetooth.DeviceListActivity;
 
 public class LobbyFragment extends AbstractFragment {
 
-    /**
-     * Local Bluetooth adapter
-     */
-    private BluetoothAdapter mBluetoothAdapter = null;
-
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_ENABLE_BT = 3;
     /**
      * Member object for the service
      */
     public BluetoothService mBluetoothService = null;
-
+    /**
+     * Local Bluetooth adapter
+     */
+    private BluetoothAdapter mBluetoothAdapter = null;
     private LobbyListAdapter playerListAdapter;
     private RemoteListAdapter remoteListAdapter;
-
-    // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_ENABLE_BT = 3;
 
     public static LobbyFragment newInstance() {
         LobbyFragment fragment = new LobbyFragment();
@@ -78,7 +75,8 @@ public class LobbyFragment extends AbstractFragment {
                         .setView(dialogView)
                         .setPositiveButton("Ajouter", null)
                         .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) { dialog.dismiss();
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
                             }
                         });
                 final AlertDialog alert = builder.create();
@@ -112,7 +110,8 @@ public class LobbyFragment extends AbstractFragment {
                 button.setEnabled(false);
                 inputField.addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -124,7 +123,8 @@ public class LobbyFragment extends AbstractFragment {
                     }
 
                     @Override
-                    public void afterTextChanged(Editable s) {}
+                    public void afterTextChanged(Editable s) {
+                    }
                 });
             }
         });
@@ -142,7 +142,7 @@ public class LobbyFragment extends AbstractFragment {
             @Override
             public void onClick(View view) {
                 if (playerListAdapter.getData().size() > 3) {
-                    ((ServerGameActivity)mContext).prepareGame(playerListAdapter.getData());
+                    ((ServerGameActivity) mContext).prepareGame(playerListAdapter.getData());
                 } else {
                     Toast.makeText(getActivity(), R.string.four_players_needed, Toast.LENGTH_SHORT).show();
                 }
@@ -206,7 +206,7 @@ public class LobbyFragment extends AbstractFragment {
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so get service
-                    mBluetoothService = ((GameActivity)mContext).getBluetoothService();
+                    mBluetoothService = ((GameActivity) mContext).getBluetoothService();
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d("LobbyFragment", "BT not enabled");
@@ -218,7 +218,7 @@ public class LobbyFragment extends AbstractFragment {
     /**
      * Establish connection with other device
      *
-     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param data An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
      */
     private void connectDevice(Intent data) {
         // Get the device MAC address

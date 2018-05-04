@@ -64,7 +64,8 @@ public class ServerGameActivity extends GameActivity {
             if (lobbyFrag != null) {
                 lobbyFrag.addRemote(remoteName);
             }
-        } catch (ClassCastException ignored) {}
+        } catch (ClassCastException ignored) {
+        }
     }
 
     private void removeRemoteFromLobby(String remoteName) {
@@ -74,6 +75,7 @@ public class ServerGameActivity extends GameActivity {
             if (lobbyFrag != null) {
                 lobbyFrag.removeRemote(remoteName);
             }
-        } catch (ClassCastException ignored) {}
+        } catch (ClassCastException ignored) {
+        }
     }
 }

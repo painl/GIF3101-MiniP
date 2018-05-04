@@ -9,6 +9,11 @@ public class BlueGarouApplication extends Application {
     private WebService mWebService;
     private boolean auth;
 
+    public static synchronized BlueGarouApplication getInstance() {
+        mInstance.mWebService.initRequestQueue(mInstance.getApplicationContext());
+        return mInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -17,22 +22,15 @@ public class BlueGarouApplication extends Application {
         auth = false;
     }
 
-    public synchronized WebService getWebService()
-    {
+    public synchronized WebService getWebService() {
         return this.mWebService;
     }
 
-    public static synchronized BlueGarouApplication getInstance() {
-        mInstance.mWebService.initRequestQueue(mInstance.getApplicationContext());
-        return mInstance;
+    public boolean getAuth() {
+        return this.auth;
     }
 
     public void setAuth(boolean auth) {
         this.auth = auth;
-    }
-
-    public boolean getAuth()
-    {
-        return this.auth;
     }
 }

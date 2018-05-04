@@ -12,8 +12,7 @@ public class WinFragment extends AbstractFragment {
 
     private Role.Side mWinner;
 
-    public static WinFragment newInstance(Role.Side winner)
-    {
+    public static WinFragment newInstance(Role.Side winner) {
         WinFragment fragment = new WinFragment();
         fragment.mWinner = winner;
         fragment.setLayout(R.layout.fragment_game_win);
@@ -25,8 +24,7 @@ public class WinFragment extends AbstractFragment {
         super.onViewCreated(view, savedInstanceState);
         ImageView imgRole = mView.findViewById(R.id.img_role);
         TextView textYouAre = mView.findViewById(R.id.txt_you_are);
-        switch (mWinner)
-        {
+        switch (mWinner) {
             case WEREWOLF:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
                 textYouAre.setText(textYouAre.getText().toString().replace("...", "Les Loups-Garou"));
@@ -34,7 +32,7 @@ public class WinFragment extends AbstractFragment {
             default:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.villager));
                 textYouAre.setText(textYouAre.getText().toString().replace("...", "Les Villageois"));
-                break ;
+                break;
         }
         mView.setOnClickListener(new View.OnClickListener() {
             @Override

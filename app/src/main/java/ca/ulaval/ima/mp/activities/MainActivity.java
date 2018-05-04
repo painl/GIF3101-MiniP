@@ -44,23 +44,21 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     currentFragment = HomeFragment.newInstance();
-                    break ;
+                    break;
                 case R.id.navigation_stats:
                     currentFragment = StatsFragment.newInstance();
-                    break ;
+                    break;
                 case R.id.navigation_rules:
                     currentFragment = RulesFragment.newInstance();
-                    break ;
+                    break;
             }
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return fragmentTransit(currentFragment, false);
         }
     };
 
-    public boolean fragmentTransit(Fragment transit, boolean toBackStack)
-    {
-        if (transit != null)
-        {
+    public boolean fragmentTransit(Fragment transit, boolean toBackStack) {
+        if (transit != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(mFragment.getId(), transit, transit.getClass().getSimpleName());
             if (toBackStack)
@@ -71,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void tryAuth()
-    {
+    private void tryAuth() {
         SharedPreferences sharedPreferences = BlueGarouApplication.getInstance().getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("access_token", null);
         if (token != null) {
@@ -82,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void failAuth()
-    {
+    private void failAuth() {
         SharedPreferences sharedPreferences = BlueGarouApplication.getInstance().getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("access_token").commit();
         BlueGarouApplication.getInstance().setAuth(false);
@@ -119,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void alertLoaded(final int success, String message)
-    {
+    private void alertLoaded(final int success, String message) {
         TextView text = alert.findViewById(R.id.text);
         alert.findViewById(R.id.progress).setVisibility(View.GONE);
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
@@ -137,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void requestDialog()
-    {
+    private void requestDialog() {
         final LayoutInflater inflater = LayoutInflater.from(this);
         final View dialogView = inflater.inflate(R.layout.dialog_request_load, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -151,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         alert = builder.create();
         alert.setCancelable(false);
         alert.show();
-        ((TextView)alert.findViewById(R.id.text)).setText("Connexion auto ...");
+        ((TextView) alert.findViewById(R.id.text)).setText("Connexion auto ...");
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 }

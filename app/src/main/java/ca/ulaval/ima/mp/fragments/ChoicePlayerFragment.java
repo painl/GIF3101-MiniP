@@ -13,8 +13,7 @@ public class ChoicePlayerFragment extends AbstractFragment {
 
     private Player mPlayer;
 
-    public static ChoicePlayerFragment newInstance(Player player)
-    {
+    public static ChoicePlayerFragment newInstance(Player player) {
         ChoicePlayerFragment fragment = new ChoicePlayerFragment();
         fragment.mPlayer = player;
         fragment.setLayout(R.layout.fragment_game_player_choice);
@@ -29,19 +28,18 @@ public class ChoicePlayerFragment extends AbstractFragment {
         textYouAre.setText(textYouAre.getText().toString().replace("...", mPlayer.getName()));
         TextView textRole = mView.findViewById(R.id.txt_role);
         textRole.setText(mPlayer.getRole().getName());
-        switch (mPlayer.getRole().getPhotoName())
-        {
+        switch (mPlayer.getRole().getPhotoName()) {
             case "wolf.png":
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
                 break;
             default:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.villager));
-                break ;
+                break;
         }
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((GameActivity)mContext).onBackPressed();
+                ((GameActivity) mContext).onBackPressed();
             }
         });
     }

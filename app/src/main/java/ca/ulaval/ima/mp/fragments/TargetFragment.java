@@ -28,10 +28,7 @@ public class TargetFragment extends AbstractFragment {
     private int mId;
     private TARGET_MODE mMode;
 
-    public enum TARGET_MODE {WOLF, VOTE}
-
-    public static TargetFragment newInstance(Player player, List<Player> targets, TARGET_MODE mode)
-    {
+    public static TargetFragment newInstance(Player player, List<Player> targets, TARGET_MODE mode) {
         TargetFragment fragment = new TargetFragment();
         fragment.mTargets = targets;
         fragment.mName = player.getName();
@@ -79,10 +76,12 @@ public class TargetFragment extends AbstractFragment {
             @Override
             public void onClick(View view) {
                 if (targeted != null) {
-                    ((GameActivity)mContext).playerVote(mId, targeted.getId());
+                    ((GameActivity) mContext).playerVote(mId, targeted.getId());
                 }
-                ((GameActivity)mContext).onBackPressed();
+                ((GameActivity) mContext).onBackPressed();
             }
         });
     }
+
+    public enum TARGET_MODE {WOLF, VOTE}
 }

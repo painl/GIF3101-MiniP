@@ -17,7 +17,7 @@ public class PlayerVoteMessage implements IGameMessage {
     public static PlayerVoteMessage unserialize(byte[] array, int length) {
         ByteBuffer wrapped = ByteBuffer.wrap(array);
 
-        return new PlayerVoteMessage(wrapped.getInt(),  wrapped.getInt());
+        return new PlayerVoteMessage(wrapped.getInt(), wrapped.getInt());
     }
 
     public byte[] serialize() {
@@ -28,7 +28,7 @@ public class PlayerVoteMessage implements IGameMessage {
         return dbuf.array();
     }
 
-    public BluetoothMessage.MessageType getType(){
+    public BluetoothMessage.MessageType getType() {
         return BluetoothMessage.MessageType.PLAYER_VOTE;
     }
 }
