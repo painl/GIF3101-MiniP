@@ -8,13 +8,62 @@
     android:orientation="vertical"
     android:id="@+id/fragment_root">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/no_auth_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="center"
-        android:text="@string/title_stats" />
+        android:padding="35dp">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="Vous devez vous connecter pour acceder aux statistiques." />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/auth_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="35dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/games"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blueLight"
+            android:textSize="16sp"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:text="Nombre de parties jouées : --"/>
+        <TextView
+            android:id="@+id/villagers"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:text="Victoires villageois : --"/>
+        <TextView
+            android:id="@+id/wwolfs"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:text="Victoires loups-garou : --"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>
 </ScrollView>
