@@ -22,7 +22,7 @@
     <string name="unmute">Lancer la voix artificielle</string>
 
     <string name="rules">
-        ★ BASES DU JEU ET DE L\'APPLICATION\n\n
+        ★ BASES DU JEU ET DE L \'APPLICATION\n\n
             • Blue-Garou est basé sur le jeu officiel Loup-Garou. C\'est un jeu de plateau qui se joue de 3 à un nombre théoriquement infini de joueurs.\n
             • Plus besoin de maître du jeu: L\'application se charge de tous les événements de la partie ainsi que son déroulement.\n
             • La table est trop grande pour que tout le monde accède à un seul téléphone ? Connectez d\'autres téléphones possédant l\'application en Bluetooth pour étendre le plateau de jeu.\n
@@ -44,4 +44,74 @@
     </string>
     <string name="four_players_needed">4 joueurs minimum</string>
     <string name="name_already_taken">Nom deja pris</string>
+    <string name="voice_unactive">Voix artificielle désactivée</string>
+    <string name="TTS_language_not_supported">This Language is not supported</string>
+    <string name="TTS_init_fail">Initilization Failed!</string>
+    <string name="TTS_day_up">Le jour se lève sur le village.</string>
+    <string name="TTS_begin">Vous sentez qu\'un ou plusieurs loups-garous sont cachés parmi vous. Vous devez les trouver. Mais avant, faites connaissances.</string>
+    <string name="TTS_night">La nuit tombe sur le village... Loups-garous, réveillez-vous et choisissez votre victime</string>
+    <string name="TTS_vote">Qui sera pendu? Votez chacun votre tour</string>
+    <string name="TTS_dead">est mort ! C\'était un</string>
+    <string name="TTS_wwolf">loup-garou</string>
+    <string name="TTS_villagers">villageois</string>
+    <string name="TTS_wwolf_win">Les loups-garous ont gagnés!</string>
+    <string name="TTS_villagers_win">Les villageois ont gagnés!</string>
+    <string name="auth_success">Connexion réussie.</string>
+    <string name="auth_fail">La connexion a échouée.</string>
+    <string name="auth_auto">Connexion auto ...</string>
+    <string name="bluetooth_not_availaible">Bluetooth is not available</string>
+    <string name="connect_to">Connected to</string>
+    <string name="disconnect_from">Disconnected from</string>
+    <string name="ok">Ok</string>
+    <string name="username_chars_err">Le nom d\'utilisateur doit faire au moins 4 caractères.</string>
+    <string name="pass_chars_err">Le mot de passe doit faire au moins 4 caractères.</string>
+    <string name="pass_sim_err">Le mot de passe ne correspond pas.</string>
+    <string name="connect_err">Erreur de connexion</string>
+    <string name="register_success">Inscription réussie</string>
+    <string name="register_err">Erreur d\'inscription</string>
+    <string name="begin_btn">Commencer</string>
+    <string name="next_btn">Continuer</string>
+    <string name="roles_attrib">Attribution des rôles. Qui êtes vous ?</string>
+    <string name="votes_time">C\'est le moment des votes.</string>
+    <string name="wwolfs_action">C\'est la nuit. Loups-Garou,  action !</string>
+    <string name="talks">Débat...</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="log_in">Se connecter</string>
+    <string name="give_player_names">Rentrer le nom du joueur</string>
+    <string name="add_player">Ajouter</string>
+    <string name="cancel">Annuler</string>
+    <string name="bt_not_available">Bluetooth is not available</string>
+    <string name="kill_someone"> choisissez quelqu\'un à tuer :</string>
+    <string name="vote_someone">votez pour un coupable :</string>
+    <string name="the_warewolves">Les Loups-Garou</string>
+    <string name="the_villagers">Les Villageois</string>
+    <string name="scan">SCAN</string>
+    <string name="others">Autres</string>
+    <string name="paired">Paired</string>
+    <string name="deleting">Suppression</string>
+    <string name="name">Nom</string>
+    <string name="auth_successful">Connexion réussie</string>
+    <string name="auth_user">Utilisateur</string>
+    <string name="passphrase">Mot de passe</string>
+    <string name="confirm_pass">Confirmer le mot de passe</string>
+    <string name="btn_connect">Se connecter</string>
+    <string name="need_account">Besoin d\'un compte ?</string>
+    <string name="register">S\'inscrire</string>
+    <string name="completestr_is_dead">... est mort.</string>
+    <string name="werewolf_cap">LOUP-GAROU</string>
+    <string name="attrib_roles">Attribution des rôles. Qui êtes vous ?</string>
+    <string name="completestr_you_are">..., vous êtes :</string>
+    <string name="completestr_won">... ont gagnés</string>
+    <string name="play">Jouer</string>
+    <string name="rejoin">Rejoindre</string>
+    <string name="connect">Se connecter</string>
+    <string name="connect_exp">Vous connecter améliorera votre expérience de jeu.</string>
+    <string name="add_controller">Ajouter Manette</string>
+    <string name="launch_game">Lancer la partie</string>
+    <string name="add_player_btn">Ajouter Joueur</string>
+    <string name="eye_on">Regardez le téléphone principal</string>
+    <string name="need_to_connect">Vous devez vous connecter pour acceder aux statistiques.</string>
+    <string name="completestr_stats_games">Nombre de parties jouées : --</string>
+    <string name="completestr_stats_win_v">Victoires villageois : --</string>
+    <string name="completestr_stats_win_w">Victoires loups-garou : --</string>
 </resources>

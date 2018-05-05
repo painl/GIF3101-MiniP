@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="#666"
         android:paddingLeft="5dp"
-        android:text="Paired"
+        android:text="@string/paired"
         android:textColor="#fff"
         android:visibility="gone"
         />
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:background="#666"
         android:paddingLeft="5dp"
-        android:text="Autres"
+        android:text="@string/others"
         android:textColor="#fff"
         android:visibility="gone"
         />
@@ -47,6 +47,6 @@
         android:id="@+id/button_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SCAN"
+        android:text="@string/scan"
         />
 </LinearLayout>

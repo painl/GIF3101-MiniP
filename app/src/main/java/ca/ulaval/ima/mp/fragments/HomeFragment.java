@@ -32,7 +32,7 @@ public class HomeFragment extends AbstractFragment {
         Picasso.get().load(R.drawable.girl).into(imageView);
         final Button authBtn = mView.findViewById(R.id.btn_auth);
         if (BlueGarouApplication.getInstance().getAuth())
-            authBtn.setText("Se déconnecter");
+            authBtn.setText(R.string.logout);
         authBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +41,7 @@ public class HomeFragment extends AbstractFragment {
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
                     sharedPreferences.edit().remove("access_token").commit();
                     BlueGarouApplication.getInstance().setAuth(false);
-                    authBtn.setText("Se connecter");
+                    authBtn.setText(R.string.log_in);
                 }
                 else
                     ((MainActivity)mContext).fragmentTransit(AuthFragment.newInstance(AuthFragment.AUTH.LOGIN), true);

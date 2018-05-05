@@ -22,7 +22,7 @@
             android:layout_margin="16dp"
             android:layout_gravity="center"
             android:textColor="@color/colorPrimaryDark"
-            android:text="Vous devez vous connecter pour acceder aux statistiques." />
+            android:text="@string/need_to_connect" />
 
     </LinearLayout>
 
@@ -42,7 +42,7 @@
             android:textSize="16sp"
             android:layout_margin="10dp"
             android:textStyle="bold"
-            android:text="Nombre de parties jouées : --"/>
+            android:text="@string/completestr_stats_games"/>
         <TextView
             android:id="@+id/villagers"
             android:textColor="@android:color/holo_green_dark"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textStyle="bold"
-            android:text="Victoires villageois : --"/>
+            android:text="@string/completestr_stats_win_v"/>
         <TextView
             android:id="@+id/wwolfs"
             android:textColor="@android:color/holo_red_light"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textStyle="bold"
-            android:text="Victoires loups-garou : --"/>
+            android:text="@string/completestr_stats_win_w"/>
 
     </LinearLayout>
 

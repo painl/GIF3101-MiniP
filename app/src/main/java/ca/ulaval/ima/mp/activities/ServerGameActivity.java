@@ -9,6 +9,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.List;
 
+import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.bluetooth.BluetoothMessage;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 import ca.ulaval.ima.mp.bluetooth.messages.RoleDispatchMessage;
@@ -37,7 +38,7 @@ public class ServerGameActivity extends GameActivity {
     protected void remoteConnected(Message msg) {
         String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
         String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
-        Toast.makeText(ServerGameActivity.this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ServerGameActivity.this, getString(R.string.connect_to) + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.put(mConnectedDeviceAddress, mConnectedDeviceName);
         addRemoteFromLobby(mConnectedDeviceName);
     }
@@ -46,7 +47,7 @@ public class ServerGameActivity extends GameActivity {
     protected void remoteDisconnected(Message msg) {
         String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
         String mConnectedDeviceAddress = msg.getData().getString(BluetoothService.DEVICE_ADDRESS);
-        Toast.makeText(ServerGameActivity.this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ServerGameActivity.this, getString(R.string.disconnect_from) + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
         remotes.remove(mConnectedDeviceAddress);
         removeRemoteFromLobby(mConnectedDeviceName);
     }

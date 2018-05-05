@@ -86,7 +86,7 @@ public class AuthFragment extends AbstractFragment {
         final View dialogView = inflater.inflate(R.layout.dialog_request_load, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setView(dialogView)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
@@ -101,12 +101,12 @@ public class AuthFragment extends AbstractFragment {
     {
         if (user.length() < 4)
         {
-            mError.setText("Le nom d'utilisateur doit faire au moins 4 caractères.");
+            mError.setText(R.string.username_chars_err);
             mError.setVisibility(View.VISIBLE);
         }
         else if (pass.length() < 4)
         {
-            mError.setText("Le mot de passe doit faire au moins 4 caractères.");
+            mError.setText(R.string.pass_chars_err);
             mError.setVisibility(View.VISIBLE);
         }
         else {
@@ -124,17 +124,17 @@ public class AuthFragment extends AbstractFragment {
     {
         if (user.length() < 4)
         {
-            mError.setText("Le nom d'utilisateur doit faire au moins 4 caractères.");
+            mError.setText(R.string.username_chars_err);
             mError.setVisibility(View.VISIBLE);
         }
         else if (pass.length() < 4)
         {
-            mError.setText("Le mot de passe doit faire au moins 4 caractères.");
+            mError.setText(R.string.pass_chars_err);
             mError.setVisibility(View.VISIBLE);
         }
         else if (!pass.equals(passConfirm))
         {
-            mError.setText("Le mot de passe ne correspond pas.");
+            mError.setText(R.string.pass_sim_err);
             mError.setVisibility(View.VISIBLE);
         }
         else {
@@ -194,7 +194,7 @@ public class AuthFragment extends AbstractFragment {
             @Override
             public void onResponse(final JSONObject response) {
                 Log.d("GET_OBJX", response.toString());
-                alertLoaded(1, "Connexion réussie");
+                alertLoaded(1, mContext.getString(R.string.auth_success));
                 SharedPreferences sharedPreferences = mContext.getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
                 try {
                     sharedPreferences.edit().putString("access_token", response.getJSONObject("access_token").getString("token")).commit();
@@ -207,7 +207,7 @@ public class AuthFragment extends AbstractFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("GET_OBJX", error.toString());
-                alertLoaded(0, "Erreur de connexion");
+                alertLoaded(0, getString(R.string.connect_err));
             }
         });
     }
@@ -217,13 +217,13 @@ public class AuthFragment extends AbstractFragment {
             @Override
             public void onResponse(final JSONObject response) {
                 Log.d("GET_OBJX", response.toString());
-                alertLoaded(1, "Inscription réussie");
+                alertLoaded(1, getString(R.string.register_success));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("GET_OBJX", error.toString());
-                alertLoaded(0, "Erreur d'inscription");
+                alertLoaded(0, getString(R.string.register_err));
             }
         });
     }
