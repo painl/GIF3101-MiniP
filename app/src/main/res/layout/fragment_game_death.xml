@@ -14,7 +14,7 @@
             android:textStyle="bold"
             android:textSize="17sp"
             android:gravity="center_horizontal"
-            android:text="... est mort."/>
+            android:text="@string/completestr_is_dead"/>
 
         <ImageView
             android:layout_marginTop="15dp"
@@ -29,6 +29,6 @@
             android:gravity="center_horizontal"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:text="LOUP-GAROU"/>
+            android:text="@string/werewolf_cap"/>
 
     </LinearLayout>

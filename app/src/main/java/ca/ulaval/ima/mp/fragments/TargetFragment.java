@@ -65,13 +65,13 @@ public class TargetFragment extends AbstractFragment {
         });
         if (mMode == TARGET_MODE.WOLF) {
             Picasso.get().load(R.drawable.wolf).into(icone);
-            text.setText(mName + " choisissez quelqu'un à tuer :");
+            text.setText(String.format("%s%s", mName, getString(R.string.kill_someone)));
         }
         if (mMode == TARGET_MODE.VOTE) {
             Picasso.get().load(R.drawable.villager).into(icone);
-            text.setText(mName + " votez pour un coupable :");
+            text.setText(String.format("%s%s", mName, getString(R.string.vote_someone)));
         }
-        btn.setText("Ok");
+        btn.setText(getString(R.string.ok));
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

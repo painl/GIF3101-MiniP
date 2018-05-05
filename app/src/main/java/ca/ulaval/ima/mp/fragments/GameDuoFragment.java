@@ -58,8 +58,8 @@ public class GameDuoFragment extends AbstractFragment {
         switch (mChoice) {
             case ROLES:
                 Picasso.get().load(R.drawable.girl).into(icone);
-                btn.setText("Commencer");
-                text.setText("Attribution des rôles.\nQui êtes vous ?");
+                btn.setText(R.string.begin_btn);
+                text.setText(R.string.roles_attrib);
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -76,8 +76,8 @@ public class GameDuoFragment extends AbstractFragment {
                 break;
             case VOTES:
                 Picasso.get().load(R.drawable.villager).into(icone);
-                btn.setText("Continuer");
-                text.setText("C'est le moment des votes.");
+                btn.setText(R.string.next_btn);
+                text.setText(R.string.votes_time);
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -93,8 +93,8 @@ public class GameDuoFragment extends AbstractFragment {
                 break;
             case WOLVES:
                 Picasso.get().load(R.drawable.wolf).into(icone);
-                btn.setText("Continuer");
-                text.setText("C'est la nuit. Loups-Garou, \naction !");
+                btn.setText(getString(R.string.next_btn));
+                text.setText(R.string.wwolfs_action);
                 mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -110,14 +110,14 @@ public class GameDuoFragment extends AbstractFragment {
                 break;
             case DEBATE:
                 Picasso.get().load(R.drawable.villager).into(icone);
-                btn.setText("Continuer");
+                btn.setText(getString(R.string.next_btn));
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ((GameActivity) mContext).prepareStep(2);
                     }
                 });
-                text.setText("Débat...");
+                text.setText(R.string.talks);
                 mListView.setVisibility(View.GONE);
                 break;
         }

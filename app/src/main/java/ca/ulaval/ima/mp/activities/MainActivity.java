@@ -103,14 +103,14 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(final JSONObject response) {
                 Log.d("GET_OBJX", response.toString());
                 BlueGarouApplication.getInstance().setAuth(true);
-                alertLoaded(1, "Connexion réussie.");
+                alertLoaded(1, getString(R.string.auth_success));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("GET_OBJX", error.toString());
                 failAuth();
-                alertLoaded(1, "La connexion a échouée.");
+                alertLoaded(1, getString(R.string.auth_fail));
             }
         });
     }
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         alert = builder.create();
         alert.setCancelable(false);
         alert.show();
-        ((TextView) alert.findViewById(R.id.text)).setText("Connexion auto ...");
+        ((TextView)alert.findViewById(R.id.text)).setText(R.string.auth_auto);
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 }

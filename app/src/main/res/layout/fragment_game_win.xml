@@ -14,7 +14,7 @@
             android:textStyle="bold"
             android:textSize="17sp"
             android:gravity="center_horizontal"
-            android:text="... ont gagnés"/>
+            android:text="@string/completestr_won"/>
 
         <ImageView
             android:layout_marginTop="15dp"

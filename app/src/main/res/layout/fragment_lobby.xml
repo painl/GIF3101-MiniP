@@ -1,6 +1,7 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,7 +21,7 @@
             android:layout_marginBottom="7dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/stroke_black"
-            android:padding="2px"></ListView>
+            android:padding="2px"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_add_player"
@@ -28,7 +29,7 @@
             android:layout_width="172dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:text="Ajouter Joueur" />
+            android:text="@string/add_player_btn" />
 
         <ListView
             android:id="@+id/remotes_list"
@@ -37,7 +38,7 @@
             android:layout_marginBottom="7dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/stroke_black"
-            android:padding="2px"></ListView>
+            android:padding="2px"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_add_remote"
@@ -45,7 +46,7 @@
             android:layout_width="172dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:text="Ajouter Manette" />
+            android:text="@string/add_controller" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_launch_game"
@@ -55,7 +56,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
             android:layout_marginTop="10dp"
-            android:text="Lancer la partie" />
+            android:text="@string/launch_game" />
 
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

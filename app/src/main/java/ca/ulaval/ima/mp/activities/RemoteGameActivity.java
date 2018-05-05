@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
+import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 import ca.ulaval.ima.mp.fragments.RemoteLobbyFragment;
 
@@ -24,7 +25,7 @@ public class RemoteGameActivity extends GameActivity {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.bluetooth_not_availaible, Toast.LENGTH_LONG).show();
             this.finish();
         }
 
@@ -37,12 +38,12 @@ public class RemoteGameActivity extends GameActivity {
     @Override
     protected void remoteConnected(Message msg) {
         String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
-        Toast.makeText(this, "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.connect_to) + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void remoteDisconnected(Message msg) {
         String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
-        Toast.makeText(this, "Disconnected from " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.disconnect_from) + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
     }
 }

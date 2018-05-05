@@ -71,12 +71,11 @@ public class LobbyFragment extends AbstractFragment {
             public void onClick(View v) {
                 final View dialogView = inflater.inflate(R.layout.dialog_add_player, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(LobbyFragment.this.getActivity());
-                builder.setTitle("Rentrer le nom du joueur")
+                builder.setTitle(R.string.give_player_names)
                         .setView(dialogView)
-                        .setPositiveButton("Ajouter", null)
-                        .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
+                        .setPositiveButton(getString(R.string.add_player), null)
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) { dialog.dismiss();
                             }
                         });
                 final AlertDialog alert = builder.create();
@@ -159,7 +158,7 @@ public class LobbyFragment extends AbstractFragment {
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
-            Toast.makeText(getActivity(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.bt_not_available, Toast.LENGTH_LONG).show();
         }
     }
 

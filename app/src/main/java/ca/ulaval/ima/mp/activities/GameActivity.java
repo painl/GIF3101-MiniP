@@ -98,10 +98,10 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
             int result = tts.setLanguage(Locale.FRANCE);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
+                Log.e("TTS", getString(R.string.TTS_language_not_supported));
             }
         } else {
-            Log.e("TTS", "Initilization Failed!");
+            Log.e("TTS", getString(R.string.TTS_init_fail));
         }
     }
 
@@ -126,10 +126,9 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     public void toggleTTS() {
         MenuItem muteBtn = this.menu.findItem(R.id.mute_btn);
         if (this.ttsMuted) {
-            Toast.makeText(this, "Voix artificielle activée", Toast.LENGTH_LONG).show();
             muteBtn.setTitle(R.string.mute);
         } else {
-            Toast.makeText(this, "Voix artificielle désactivée", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.voice_unactive, Toast.LENGTH_LONG).show();
             muteBtn.setTitle(R.string.unmute);
         }
         this.ttsMuted = !this.ttsMuted;
@@ -210,8 +209,8 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     }
 
     public void startDebateStep(int turn) {
-        String speech = "Le jour se lève sur le village.";
-        speech += (turn == 0) ? "Vous sentez qu'un ou plusieurs loups-garous sont cachés parmi vous. Vous devez les trouver. Mais avant, faites connaissances." : "C'est l'heure du débat! Vous avez 10 minutes pour débusquez les intrus";
+        String speech = getString(R.string.TTS_day_up);
+        speech += (turn == 0) ? getString(R.string.TTS_begin) : "C'est l'heure du débat! Vous avez 10 minutes pour débusquez les intrus";
         this.fragmentTransit(GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.DEBATE, null), false);
         this.speak(speech);
     }
@@ -220,14 +219,14 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
         GameDuoFragment wolvesFragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.WOLVES, wolves);
         wolvesFragment.setTargets(meals);
         this.fragmentTransit(wolvesFragment, false);
-        this.speak("La nuit tombe sur le village... Loups-garous, réveillez-vous et choisissez votre victime");
+        this.speak(getString(R.string.TTS_night));
     }
 
     public void startVotesStep(List<Player> votes) {
         GameDuoFragment fragment = GameDuoFragment.newInstance(GameDuoFragment.CHOICE_MODE.VOTES, votes);
         fragment.setTargets(votes);
         this.fragmentTransit(fragment, false);
-        this.speak("Qui sera pendu? Votez chacun votre tour");
+        this.speak(getString(R.string.TTS_vote));
     }
 
     public void startTargetStep(Player name, List<Player> targets, TargetFragment.TARGET_MODE mode) {
@@ -236,8 +235,8 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
 
     public void startDeathStep(List<Player> deads, Game.Time time) {
         Player dead = deads.get(0);
-        String speech = dead.getName() + " est mort ! C'était un ";
-        speech += (dead.getRole().getSide() == Role.Side.WEREWOLF) ? "loup-garou" : "villageois";
+        String speech = dead.getName() + getString(R.string.TTS_dead);
+        speech += (dead.getRole().getSide() == Role.Side.WEREWOLF) ? getString(R.string.TTS_wwolf) : getString(R.string.TTS_villagers);
         this.fragmentTransit(DeathFragment.newInstance(deads.get(0), time), false);
         this.speak(speech);
     }
@@ -250,7 +249,7 @@ abstract public class GameActivity extends AppCompatActivity implements TextToSp
     }
 
     public void startWinStep(Role.Side winner) {
-        String speech = (winner == Role.Side.WEREWOLF) ? "Les loups-garous ont gagnés!" : "Les villageois ont gagnés!";
+        String speech = (winner == Role.Side.WEREWOLF) ? getString(R.string.TTS_wwolf_win) : getString(R.string.TTS_villagers_win);
         this.fragmentTransit(WinFragment.newInstance(winner), false);
         this.speak(speech);
     }

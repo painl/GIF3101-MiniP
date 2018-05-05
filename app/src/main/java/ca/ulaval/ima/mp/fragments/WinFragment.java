@@ -42,12 +42,12 @@ public class WinFragment extends AbstractFragment {
         switch (mWinner) {
             case WEREWOLF:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
-                textYouAre.setText(textYouAre.getText().toString().replace("...", "Les Loups-Garou"));
+                textYouAre.setText(textYouAre.getText().toString().replace("...", getString(R.string.the_warewolves)));
                 break;
             default:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.villager));
-                textYouAre.setText(textYouAre.getText().toString().replace("...", "Les Villageois"));
-                break;
+                textYouAre.setText(textYouAre.getText().toString().replace("...", getString(R.string.the_villagers)));
+                break ;
         }
         sendStats();
         mView.setOnClickListener(new View.OnClickListener() {
