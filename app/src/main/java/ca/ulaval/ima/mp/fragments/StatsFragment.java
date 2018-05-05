@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ca.ulaval.ima.mp.R;
+import ca.ulaval.ima.mp.adapters.HistoryListAdapter;
 import ca.ulaval.ima.mp.application.BlueGarouApplication;
 import ca.ulaval.ima.mp.network.WSResponse;
 
@@ -44,11 +46,13 @@ public class StatsFragment extends AbstractFragment {
         init();
     }
 
-    private void updateStats(int nbWins, int nbVWins, int nbWWins)
-    {
+    private void updateStats(JSONArray stats, int nbWins, int nbVWins, int nbWWins) {
         TextView games = AuthLayout.findViewById(R.id.games);
         TextView villagers = AuthLayout.findViewById(R.id.villagers);
         TextView wwolfs = AuthLayout.findViewById(R.id.wwolfs);
+        ListView history = AuthLayout.findViewById(R.id.history_list);
+        HistoryListAdapter historyListAdapter = new HistoryListAdapter(mContext, stats);
+        history.setAdapter(historyListAdapter);
         games.setText(games.getText().toString().replace("--", String.valueOf(nbWins)));
         villagers.setText(villagers.getText().toString().replace("--", String.valueOf(nbVWins)));
         wwolfs.setText(wwolfs.getText().toString().replace("--", String.valueOf(nbWWins)));
@@ -71,7 +75,7 @@ public class StatsFragment extends AbstractFragment {
                         else
                             wWins++;
                     }
-                    updateStats(stats.length(), vWins, wWins);
+                    updateStats(stats, stats.length(), vWins, wWins);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
