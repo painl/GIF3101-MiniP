@@ -145,11 +145,7 @@ public class MainActivity extends AppCompatActivity {
         alert = builder.create();
         alert.setCancelable(false);
         alert.show();
-<<<<<<< HEAD
         ((TextView)alert.findViewById(R.id.text)).setText(R.string.auth_auto);
-=======
-        ((TextView) alert.findViewById(R.id.text)).setText("Connexion auto ...");
->>>>>>> 88670412db9859de84fa4a7e45dd5b1c605e7bcc
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 }
