@@ -37,7 +37,7 @@ public class DuoNamesListAdapter extends ArrayAdapter<Player> {
             viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.name.setText(name);
         if (p != null)
-            viewHolder.check.setBackgroundResource(R.drawable.toggle_checked);
+            viewHolder.check.setImageResource(R.drawable.toggle_checked);
         return convertView;
     }
 
