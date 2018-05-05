@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ulaval.ima.mp.R;
-import ca.ulaval.ima.mp.game.Player;
 
 public class HistoryListAdapter extends ArrayAdapter<JSONObject> {
     private final Context mContext;
@@ -44,8 +42,7 @@ public class HistoryListAdapter extends ArrayAdapter<JSONObject> {
                 convertView = rowView;
             }
             TextView textView = rowView.findViewById(R.id.winning_side);
-
-            int winningName = (stat.getString("winningside") == "WEREWOLVES") ?
+            int winningName = (stat.getString("winningside").compareTo("WEREWOLVES") == 0) ?
                     R.string.completestr_werewolves : R.string.completestr_villagers;
 
             TextView textView2 = rowView.findViewById(R.id.werewolves_list);

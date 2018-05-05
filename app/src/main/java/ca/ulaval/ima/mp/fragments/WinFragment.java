@@ -42,7 +42,7 @@ public class WinFragment extends AbstractFragment {
         switch (mWinner) {
             case WEREWOLF:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
-                textYouAre.setText(textYouAre.getText().toString().replace("...", getString(R.string.the_warewolves)));
+                textYouAre.setText(textYouAre.getText().toString().replace("...", getString(R.string.the_werewolves)));
                 break;
             default:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.villager));

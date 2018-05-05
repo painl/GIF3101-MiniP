@@ -41,7 +41,7 @@ public class RemoteLobbyFragment extends AbstractFragment {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(getActivity(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            ((GameActivity) mContext).finish();
+            getActivity().finish();
         }
     }
 

@@ -1,7 +1,6 @@
 package ca.ulaval.ima.mp.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,23 +11,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONObject;
 
 import ca.ulaval.ima.mp.R;
 import ca.ulaval.ima.mp.application.BlueGarouApplication;
 import ca.ulaval.ima.mp.fragments.HomeFragment;
 import ca.ulaval.ima.mp.fragments.RulesFragment;
 import ca.ulaval.ima.mp.fragments.StatsFragment;
-import ca.ulaval.ima.mp.network.WSResponse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = BlueGarouApplication.getInstance().getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("access_token", null);
         if (token != null) {
-            Log.d("TOKKKK", token);
             BlueGarouApplication.getInstance().setAuth(true);
         }
     }
