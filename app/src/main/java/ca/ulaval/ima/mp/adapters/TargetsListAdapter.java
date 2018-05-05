@@ -42,7 +42,7 @@ public class TargetsListAdapter extends ArrayAdapter<String> {
         if (selectedIndex == position)
             viewHolder.check.setBackgroundResource(R.drawable.toggle_checked);
         else
-            viewHolder.check.setImageDrawable(getContext().getResources().getDrawable(R.drawable.toggle_unchecked));
+            viewHolder.check.setBackgroundResource(R.drawable.toggle_unchecked);
         return convertView;
     }
 
