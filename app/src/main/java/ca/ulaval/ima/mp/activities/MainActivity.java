@@ -74,15 +74,8 @@ public class MainActivity extends AppCompatActivity {
         String token = sharedPreferences.getString("access_token", null);
         if (token != null) {
             Log.d("TOKKKK", token);
-            requestDialog();
-            BlueGarouApplication.getInstance().getWebService().POSTRequestWithAuth("login", onLogin(), new JSONObject(), token);
+            BlueGarouApplication.getInstance().setAuth(true);
         }
-    }
-
-    private void failAuth() {
-        SharedPreferences sharedPreferences = BlueGarouApplication.getInstance().getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
-        sharedPreferences.edit().remove("access_token").commit();
-        BlueGarouApplication.getInstance().setAuth(false);
     }
 
     @Override
@@ -95,57 +88,5 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Fragment currentFragment = HomeFragment.newInstance();
         fragmentTransit(currentFragment, false);
-    }
-
-    private WSResponse<JSONObject> onLogin() {
-        return new WSResponse<>(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(final JSONObject response) {
-                Log.d("GET_OBJX", response.toString());
-                BlueGarouApplication.getInstance().setAuth(true);
-                alertLoaded(1, getString(R.string.auth_success));
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("GET_OBJX", error.toString());
-                failAuth();
-                alertLoaded(1, getString(R.string.auth_fail));
-            }
-        });
-    }
-
-    private void alertLoaded(final int success, String message) {
-        TextView text = alert.findViewById(R.id.text);
-        alert.findViewById(R.id.progress).setVisibility(View.GONE);
-        alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-        if (success == 0)
-            text.setTextColor(this.getResources().getColor(android.R.color.holo_red_light));
-        alert.findViewById(R.id.text).setVisibility(View.VISIBLE);
-        text.setText(message);
-        alert.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alert.dismiss();
-                fragmentTransit(HomeFragment.newInstance(), false);
-            }
-        });
-    }
-
-    private void requestDialog() {
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        final View dialogView = inflater.inflate(R.layout.dialog_request_load, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-        alert = builder.create();
-        alert.setCancelable(false);
-        alert.show();
-        ((TextView)alert.findViewById(R.id.text)).setText(R.string.auth_auto);
-        alert.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
     }
 }
