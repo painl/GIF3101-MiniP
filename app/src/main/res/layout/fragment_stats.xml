@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:text="Historique de jeu" />
+            android:text="@string/completestr_game_history" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
@@ -84,7 +84,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="3"
-                android:text="Côté gagnant" />
+                android:text="@string/completestr_winning_side" />
 
             <TextView
                 android:id="@+id/villagers_list"
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="5"
-                android:text="Villageois" />
+                android:text="@string/completestr_villagers" />
 
             <TextView
                 android:id="@+id/werewolves_list"
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="4"
-                android:text="Loups Garous" />
+                android:text="@string/completestr_werewolves" />
 
         </LinearLayout>
 

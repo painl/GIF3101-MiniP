@@ -114,4 +114,8 @@
     <string name="completestr_stats_games">Nombre de parties jouées : --</string>
     <string name="completestr_stats_win_v">Victoires villageois : --</string>
     <string name="completestr_stats_win_w">Victoires loups-garou : --</string>
+    <string name="completestr_game_history">Historique de jeu</string>
+    <string name="completestr_winning_side">Côté gagnant</string>
+    <string name="completestr_villagers">Villageois</string>
+    <string name="completestr_werewolves">Loups Garous</string>
 </resources>
