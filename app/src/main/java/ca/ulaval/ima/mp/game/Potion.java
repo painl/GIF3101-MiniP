@@ -2,10 +2,8 @@ package ca.ulaval.ima.mp.game;
 
 public class Potion {
 
-    public enum Type {LIFE, DEATH}
-
-    private Type    type;
-    private int     target;
+    private Type type;
+    private int target;
 
     public Potion(Type type, int target) {
         this.type = type;
@@ -19,4 +17,6 @@ public class Potion {
     public int getTarget() {
         return target;
     }
+
+    public enum Type {LIFE, DEATH}
 }

@@ -4,14 +4,14 @@ import ca.ulaval.ima.mp.game.roles.Role;
 
 public class Player {
 
-    private final int       id;
-    private final String    name;
-    private final Role      role;
-    private boolean         alive;
-    private boolean         deathMark;
-    private boolean         salvaterMark;
-    private Role.Type       murderer;
-    private Player          vote;
+    private final int id;
+    private final String name;
+    private final Role role;
+    private boolean alive;
+    private boolean deathMark;
+    private boolean salvaterMark;
+    private Role.Type murderer;
+    private Player vote;
 
     public Player(int id, String name, Role role) {
         this.id = id;

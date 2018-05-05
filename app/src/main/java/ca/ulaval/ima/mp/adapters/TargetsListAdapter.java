@@ -15,10 +15,6 @@ import ca.ulaval.ima.mp.R;
 public class TargetsListAdapter extends ArrayAdapter<String> {
     private LayoutInflater inflater;
     private int selectedIndex = -1;
-    private static class ViewHolder {
-        ImageView check;
-        TextView name;
-    }
 
     public TargetsListAdapter(Context context, List<String> data) {
         super(context, -1, data);
@@ -48,5 +44,10 @@ public class TargetsListAdapter extends ArrayAdapter<String> {
         else
             viewHolder.check.setImageDrawable(getContext().getResources().getDrawable(R.drawable.toggle_unchecked));
         return convertView;
+    }
+
+    private static class ViewHolder {
+        ImageView check;
+        TextView name;
     }
 }

@@ -15,8 +15,7 @@ public class DeathFragment extends AbstractFragment {
     private Player mPlayer;
     private Game.Time mTime;
 
-    public static DeathFragment newInstance(Player dead, Game.Time time)
-    {
+    public static DeathFragment newInstance(Player dead, Game.Time time) {
         DeathFragment fragment = new DeathFragment();
         fragment.mPlayer = dead;
         fragment.mTime = time;
@@ -32,19 +31,18 @@ public class DeathFragment extends AbstractFragment {
         textYouAre.setText(textYouAre.getText().toString().replace("...", mPlayer.getName()));
         TextView textRole = mView.findViewById(R.id.txt_role);
         textRole.setText(mPlayer.getRole().getName());
-        switch (mPlayer.getRole().getPhotoName())
-        {
+        switch (mPlayer.getRole().getPhotoName()) {
             case "wolf.png":
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.wolf));
                 break;
             default:
                 imgRole.setImageDrawable(mContext.getResources().getDrawable(R.drawable.villager));
-                break ;
+                break;
         }
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((GameActivity)mContext).endDeathStep(mTime);
+                ((GameActivity) mContext).endDeathStep(mTime);
             }
         });
     }

@@ -22,8 +22,7 @@ public class StatsFragment extends AbstractFragment {
     private View AuthLayout;
     private View NoAuthLayout;
 
-    public static StatsFragment newInstance()
-    {
+    public static StatsFragment newInstance() {
         StatsFragment statsFragment = new StatsFragment();
         statsFragment.setLayout(R.layout.fragment_stats);
         return statsFragment;

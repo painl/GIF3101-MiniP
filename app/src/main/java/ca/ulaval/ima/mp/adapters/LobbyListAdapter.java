@@ -32,7 +32,7 @@ public class LobbyListAdapter extends ArrayAdapter<String> {
 
         ImageButton deleteBtn = rowView.findViewById(R.id.delete_btn);
 
-        deleteBtn.setOnClickListener(new View.OnClickListener(){
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 data.remove(position);
@@ -43,7 +43,7 @@ public class LobbyListAdapter extends ArrayAdapter<String> {
         return rowView;
     }
 
-    public ArrayList<String>    getData() {
+    public ArrayList<String> getData() {
         return data;
     }
 }

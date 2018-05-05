@@ -21,13 +21,17 @@ public class Referee {
         int werewolfNb = names.size() / 3;
         int i;
 
-        for (i = 0; i < werewolfNb; i++) { roles.add(Role.Type.WEREWOLF); }
-        for (; i < names.size(); i++) { roles.add(Role.Type.VILLAGER); }
+        for (i = 0; i < werewolfNb; i++) {
+            roles.add(Role.Type.WEREWOLF);
+        }
+        for (; i < names.size(); i++) {
+            roles.add(Role.Type.VILLAGER);
+        }
 
         Collections.shuffle(roles);
 
         int index = 0;
-        for (Role.Type role: roles) {
+        for (Role.Type role : roles) {
             players.put(names.get(index++), role);
         }
 
@@ -35,7 +39,7 @@ public class Referee {
     }
 
     private boolean wolfAlive() {
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.getRole().getSide() == Role.Side.WEREWOLF && player.isAlive())
                 return true;
         }
@@ -43,7 +47,7 @@ public class Referee {
     }
 
     private boolean villagerAlive() {
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.getRole().getSide() == Role.Side.VILLAGER && player.isAlive())
                 return true;
         }
@@ -59,8 +63,8 @@ public class Referee {
     }
 
     Player getChosenPlayer(List<Player> votes) {
-        Player          chosen = null;
-        List<Player>    players = getAlivePlayers(false);
+        Player chosen = null;
+        List<Player> players = getAlivePlayers(false);
         int frequency = -1;
 
         for (Player player : players) {
@@ -75,7 +79,7 @@ public class Referee {
 
     List<Player> getDeadPlayers() {
         List<Player> deadPlayers = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && player.hasDeathMark() && !player.hasSalvaterMark()) {
                 deadPlayers.add(player);
                 player.setAlive(false);
@@ -86,7 +90,7 @@ public class Referee {
 
     List<Player> getAlivePlayers(boolean dying) {
         List<Player> alivePlayers = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && player.hasDeathMark() == dying)
                 alivePlayers.add(player);
         }
@@ -95,7 +99,7 @@ public class Referee {
 
     List<Player> getWolfMeals() {
         List<Player> meals = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && player.getRole().getType() != Role.Type.WEREWOLF)
                 meals.add(player);
         }
@@ -104,7 +108,7 @@ public class Referee {
 
     List<Player> getPlayersToDefend(Player lastProtected) {
         List<Player> playersToDefend = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && (lastProtected == null || lastProtected.getId() != player.getId()))
                 playersToDefend.add(player);
         }
@@ -112,7 +116,7 @@ public class Referee {
     }
 
     private boolean playerIdInList(int playerId, List<Player> players) {
-        for (Player player: players) {
+        for (Player player : players) {
             if (player.getId() == playerId)
                 return true;
         }
@@ -121,7 +125,7 @@ public class Referee {
 
     List<Player> getPlayersToSee(List<Player> seenPlayers) {
         List<Player> playersToSee = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && !this.playerIdInList(player.getId(), seenPlayers))
                 playersToSee.add(player);
         }
@@ -130,7 +134,7 @@ public class Referee {
 
     List<Player> getWolves() {
         List<Player> wolves = new ArrayList<>();
-        for (Player player: this.game.getPlayers()) {
+        for (Player player : this.game.getPlayers()) {
             if (player.isAlive() && player.getRole().getType() == Role.Type.WEREWOLF)
                 wolves.add(player);
         }

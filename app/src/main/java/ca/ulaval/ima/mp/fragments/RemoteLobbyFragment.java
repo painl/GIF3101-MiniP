@@ -14,18 +14,16 @@ import ca.ulaval.ima.mp.bluetooth.BluetoothService;
 
 public class RemoteLobbyFragment extends AbstractFragment {
 
-    /**
-     * Local Bluetooth adapter
-     */
-    private BluetoothAdapter mBluetoothAdapter = null;
-
+    // Intent request codes
+    private static final int REQUEST_ENABLE_BT = 3;
     /**
      * Member object for the service
      */
     public BluetoothService mBluetoothService = null;
-
-    // Intent request codes
-    private static final int REQUEST_ENABLE_BT = 3;
+    /**
+     * Local Bluetooth adapter
+     */
+    private BluetoothAdapter mBluetoothAdapter = null;
 
     public static RemoteLobbyFragment newInstance() {
         RemoteLobbyFragment fragment = new RemoteLobbyFragment();
@@ -43,7 +41,7 @@ public class RemoteLobbyFragment extends AbstractFragment {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(getActivity(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            ((GameActivity)mContext).finish();
+            ((GameActivity) mContext).finish();
         }
     }
 
@@ -105,7 +103,7 @@ public class RemoteLobbyFragment extends AbstractFragment {
                     // User did not enable Bluetooth or an error occurred
                     Log.d("LobbyFragment", "BT not enabled");
                     Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                    ((AppCompatActivity)mContext).finish();
+                    ((AppCompatActivity) mContext).finish();
                 }
         }
     }

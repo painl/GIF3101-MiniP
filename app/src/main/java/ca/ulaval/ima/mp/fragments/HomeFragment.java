@@ -18,8 +18,7 @@ import ca.ulaval.ima.mp.application.BlueGarouApplication;
 
 public class HomeFragment extends AbstractFragment {
 
-    public static HomeFragment newInstance()
-    {
+    public static HomeFragment newInstance() {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setLayout(R.layout.fragment_home);
         return homeFragment;
@@ -36,8 +35,7 @@ public class HomeFragment extends AbstractFragment {
         authBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (BlueGarouApplication.getInstance().getAuth())
-                {
+                if (BlueGarouApplication.getInstance().getAuth()) {
                     SharedPreferences sharedPreferences = mContext.getSharedPreferences("BLUEGAROU", Context.MODE_PRIVATE);
                     sharedPreferences.edit().remove("access_token").commit();
                     BlueGarouApplication.getInstance().setAuth(false);
