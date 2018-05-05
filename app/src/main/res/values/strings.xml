@@ -81,7 +81,7 @@
     <string name="add_player">Ajouter</string>
     <string name="cancel">Annuler</string>
     <string name="bt_not_available">Bluetooth is not available</string>
-    <string name="kill_someone"> choisissez quelqu\'un à tuer :</string>
+    <string name="kill_someone">choisissez quelqu\'un à tuer :</string>
     <string name="vote_someone">votez pour un coupable :</string>
     <string name="the_warewolves">Les Loups-Garou</string>
     <string name="the_villagers">Les Villageois</string>
