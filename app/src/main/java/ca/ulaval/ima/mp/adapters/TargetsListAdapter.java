@@ -40,7 +40,7 @@ public class TargetsListAdapter extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.name.setText(name);
         if (selectedIndex == position)
-            viewHolder.check.setImageDrawable(getContext().getResources().getDrawable(R.drawable.toggle_checked));
+            viewHolder.check.setBackgroundResource(R.drawable.toggle_checked);
         else
             viewHolder.check.setImageDrawable(getContext().getResources().getDrawable(R.drawable.toggle_unchecked));
         return convertView;
